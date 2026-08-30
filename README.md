@@ -13,7 +13,7 @@
   &nbsp;•&nbsp;
   <a href="https://www.nexusmods.com/grounded2/mods/198"><b>⬇ Nexus Mods</b></a>
   &nbsp;•&nbsp;
-  <b>▶ Gameplay Demo — Coming Soon</b>
+  <a href="https://www.bilibili.com/video/BV1wh8R6iESi/"><b>▶ Gameplay Demo</b></a>
   &nbsp;•&nbsp;
   <a href="https://www.bilibili.com/video/BV1ws4R6fEYL/"><b>▶ Installation Video</b></a>
   &nbsp;•&nbsp;
@@ -132,24 +132,22 @@ It specifically represents an **unblockable warning** in the current PerfectBloc
 
 ### Gameplay Demo / 功能演示
 
-▶ **PerfectBlockTrainer V7.0.3 Gameplay Demo — Coming Soon**
+▶ **[Watch the PerfectBlockTrainer Gameplay Demo on Bilibili](https://www.bilibili.com/video/BV1wh8R6iESi/)**
 
-A new V7.0.3 gameplay video is being prepared.
+This is the long-term PerfectBlockTrainer gameplay demo and will be updated as the mod evolves.
 
-The V7.0.3 demo is planned to showcase:
+Current demo version: **V7.0.3**
+
+The current demo showcases:
 
 - Multiple simultaneous threats / 多威胁同时预测
 - Multi-hit prediction / 多段连击预测
-- Fast / slow timing variation / 快慢攻击时机
+- Timing mix-ups / 快慢刀
 - Moving-body / charge prediction / 动态冲刺预测
-- Mosquito combat / 蚊子攻击
-- Mosquito DiveBomb multi-phase handling / 蚊子俯冲多阶段处理
-- Earwig RockThrow ballistic prediction / 蠼螋投石弹道预测
+- Projectile prediction / 飞行物预测
 - Blockable vs. unblockable visual semantics / 可格挡与不可格挡提示
 - Threat invalidation / 威胁失效
 - Automatic Ring / Pointer cleanup / 自动清理提示
-
-Once the new gameplay demo is published, this section will be updated with the new Bilibili link.
 
 ### Installation Video / 安装视频
 
@@ -556,7 +554,7 @@ Development source code, internal runtime evidence, development probes, build ar
 - **Nexus Mods:** [PerfectBlockTrainer](https://www.nexusmods.com/grounded2/mods/198)
 - **GitHub Public Repository:** [PerfectBlockTrainer-Releases](https://github.com/Dio23366/PerfectBlockTrainer-Releases)
 - **GitHub Releases:** [PerfectBlockTrainer Releases](https://github.com/Dio23366/PerfectBlockTrainer-Releases/releases)
-- **Gameplay Demo:** V7.0.3 video coming soon
+- **Gameplay Demo:** [BV1wh8R6iESi](https://www.bilibili.com/video/BV1wh8R6iESi/)
 - **Installation Video:** [BV1ws4R6fEYL](https://www.bilibili.com/video/BV1ws4R6fEYL/)
 - **Bilibili Creator Page:** [bili_55415870362](https://space.bilibili.com/3546748811217856)
 
