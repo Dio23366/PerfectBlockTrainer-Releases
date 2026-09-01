@@ -1,4 +1,4 @@
-# PerfectBlockTrainer V7.0.3
+# PerfectBlockTrainer V7.0.4
 
 **Installation Guide / 安装指南**
 
@@ -12,7 +12,7 @@ You need:
 
 1. **Grounded 2**
 2. **UE4SS_Grounded2 1.0.3**
-3. **PerfectBlockTrainer V7.0.3**
+3. **PerfectBlockTrainer V7.0.4**
 
 ## 2. Find the Grounded 2 Installation Folder
 
@@ -76,7 +76,7 @@ Then completely exit the game.
 Extract:
 
 ```text
-PerfectBlockTrainer_V7.0.3_RELEASE.zip
+PerfectBlockTrainer_V7.0.4_RELEASE.zip
 ```
 
 Open:
@@ -296,21 +296,43 @@ Correct:
 
 ## 10. Update from an Older Version
 
-Completely exit **Grounded 2**.
+Completely exit **Grounded 2** before updating.
 
-### Updating from V7.0.2
+### Updating from V7.0.3
 
-V7.0.3 expands attack coverage, semantic handling, and validated prediction paths while keeping the current LogicMods package identity unchanged.
+V7.0.4 improves combat reliability, mixed melee/ranged handling, multi-hit and special-attack timing, projectile support, and runtime efficiency.
 
-Replace:
+Replace the old:
 
 ```text
 Grounded2\Augusta\Binaries\Win64\ue4ss\Mods\PerfectBlockTrainerCpp
 ```
 
-with the V7.0.3 `PerfectBlockTrainerCpp` folder.
+with the V7.0.4 `PerfectBlockTrainerCpp` folder.
 
-The three LogicMods files are unchanged from the validated V7.0.2 package, so they do not need to be replaced when updating directly from V7.0.2.
+The three LogicMods files in V7.0.4 have the same validated identities as V7.0.3, so they do not need to be replaced when updating directly from V7.0.3.
+
+Then confirm:
+
+```text
+BPML_GenericFunctions : 1
+BPModLoaderMod : 1
+PerfectBlockTrainerCpp : 1
+```
+
+### Updating from V7.0.2
+
+V7.0.4 can also be installed directly over V7.0.2.
+
+Replace the old:
+
+```text
+Grounded2\Augusta\Binaries\Win64\ue4ss\Mods\PerfectBlockTrainerCpp
+```
+
+with the V7.0.4 `PerfectBlockTrainerCpp` folder.
+
+The current three LogicMods files retain the same validated identities used by V7.0.2 / V7.0.3, so they do not need to be replaced if those exact files are already installed.
 
 Then confirm:
 
@@ -328,7 +350,7 @@ Replace the old:
 Grounded2\Augusta\Binaries\Win64\ue4ss\Mods\PerfectBlockTrainerCpp
 ```
 
-with the V7.0.3 `PerfectBlockTrainerCpp` folder.
+with the V7.0.4 `PerfectBlockTrainerCpp` folder.
 
 Then make sure all three current LogicMods files are installed together in:
 
@@ -368,7 +390,7 @@ Grounded2\Augusta\Content\Paks\LogicMods\PerfectBlockTrainer.ucas
 Grounded2\Augusta\Content\Paks\LogicMods\PerfectBlockTrainer.utoc
 ```
 
-Then install V7.0.3 again using Sections 5–7 above.
+Then install V7.0.4 again using Sections 5–7 above.
 
 ## 11. Uninstall
 
@@ -392,18 +414,18 @@ Then remove or disable the `PerfectBlockTrainerCpp` entry in `mods.txt`.
 
 Do not delete files belonging to other mods.
 
-## 12. Official V7.0.3 Release Identity
+## 12. Official V7.0.4 Release Identity
 
 Release package:
 
 ```text
-PerfectBlockTrainer_V7.0.3_RELEASE.zip
+PerfectBlockTrainer_V7.0.4_RELEASE.zip
 ```
 
 SHA256:
 
 ```text
-FEE010BAEAA23E1722E403F4D70E1BCC3F1066A2496A3DDE6F5D0304C906A55E
+4A38939420C82F592E842B57B84CD931AFF689E0EF7F6BE4D0EDF737E364FDA4
 ```
 
 Runtime DLL:
@@ -415,13 +437,13 @@ main.dll
 SHA256:
 
 ```text
-65FB68B291FDBADCB7C2D24A4AEB341285F30BEB80D37AA8A0C1347EB1192FEF
+84AF394E612F45C78E99EE6449F9AC2985353B4DC97E23A8CF97B75B17593037
 ```
 
 Size:
 
 ```text
-482816 bytes
+152064 bytes
 ```
 
 Only packages distributed through the official PerfectBlockTrainer channels should be considered official builds.
@@ -453,7 +475,7 @@ Only packages distributed through the official PerfectBlockTrainer channels shou
 
 1. **Grounded 2 / 禁闭求生 2**
 2. **UE4SS_Grounded2 1.0.3**
-3. **PerfectBlockTrainer V7.0.3**
+3. **PerfectBlockTrainer V7.0.4**
 
 ## 2. 找到 Grounded 2 安装目录
 
@@ -517,7 +539,7 @@ Win64
 解压：
 
 ```text
-PerfectBlockTrainer_V7.0.3_RELEASE.zip
+PerfectBlockTrainer_V7.0.4_RELEASE.zip
 ```
 
 打开：
@@ -739,13 +761,13 @@ PerfectBlockTrainerCpp : 1
 ...\Mods\PerfectBlockTrainerCpp\dlls\main.dll
 ```
 
-## 10. 从旧版本更新到 V7.0.3
+## 10. 从旧版本更新到 V7.0.4
 
-先完全退出 **Grounded 2**。
+更新前请先完全退出 **Grounded 2**。
 
-### 从 V7.0.2 更新
+### 从 V7.0.3 更新
 
-V7.0.3 扩展了攻击覆盖、攻击语义处理与经过验证的预测路径，同时当前 LogicMods 包身份保持不变。
+V7.0.4 主要提升混战中的提示稳定性，改善近战与远程攻击同时出现时的处理、多段与特殊攻击的时机判断、射弹支持以及运行效率。
 
 把旧的：
 
@@ -753,9 +775,31 @@ V7.0.3 扩展了攻击覆盖、攻击语义处理与经过验证的预测路径�
 Grounded2\Augusta\Binaries\Win64\ue4ss\Mods\PerfectBlockTrainerCpp
 ```
 
-替换成 V7.0.3 的 `PerfectBlockTrainerCpp` 文件夹。
+替换成 V7.0.4 的 `PerfectBlockTrainerCpp` 文件夹。
 
-V7.0.3 的三个 LogicMods 文件与已经验证的 V7.0.2 包保持一致，因此如果你是从 V7.0.2 直接更新，不需要重新替换 LogicMods 文件。
+V7.0.4 中的三个 LogicMods 文件与 V7.0.3 使用的是同一组已经验证过的文件，因此如果你是从 V7.0.3 直接更新，不需要重新替换 LogicMods。
+
+然后确认：
+
+```text
+BPML_GenericFunctions : 1
+BPModLoaderMod : 1
+PerfectBlockTrainerCpp : 1
+```
+
+### 从 V7.0.2 更新
+
+V7.0.4 也可以直接从 V7.0.2 更新。
+
+把旧的：
+
+```text
+Grounded2\Augusta\Binaries\Win64\ue4ss\Mods\PerfectBlockTrainerCpp
+```
+
+替换成 V7.0.4 的 `PerfectBlockTrainerCpp` 文件夹。
+
+当前三个 LogicMods 文件与 V7.0.2 / V7.0.3 使用的是同一组已经验证过的文件。如果你本地已经安装的是这些文件，就不需要再次替换。
 
 然后确认：
 
@@ -773,7 +817,7 @@ PerfectBlockTrainerCpp : 1
 Grounded2\Augusta\Binaries\Win64\ue4ss\Mods\PerfectBlockTrainerCpp
 ```
 
-替换成 V7.0.3 的 `PerfectBlockTrainerCpp` 文件夹。
+替换成 V7.0.4 的 `PerfectBlockTrainerCpp` 文件夹。
 
 然后确认当前三个 LogicMods 文件都一起安装在：
 
@@ -813,7 +857,7 @@ Grounded2\Augusta\Content\Paks\LogicMods\PerfectBlockTrainer.ucas
 Grounded2\Augusta\Content\Paks\LogicMods\PerfectBlockTrainer.utoc
 ```
 
-然后按照上面的第 5–7 节重新安装 V7.0.3。
+然后按照上面的第 5–7 节重新安装 V7.0.4。
 
 ## 11. 卸载
 
@@ -837,18 +881,18 @@ Grounded2\Augusta\Content\Paks\LogicMods\PerfectBlockTrainer.utoc
 
 不要删除其他 Mod 的文件。
 
-## 12. V7.0.3 官方发行身份
+## 12. V7.0.4 官方发行身份
 
 Release 包：
 
 ```text
-PerfectBlockTrainer_V7.0.3_RELEASE.zip
+PerfectBlockTrainer_V7.0.4_RELEASE.zip
 ```
 
 SHA256：
 
 ```text
-FEE010BAEAA23E1722E403F4D70E1BCC3F1066A2496A3DDE6F5D0304C906A55E
+4A38939420C82F592E842B57B84CD931AFF689E0EF7F6BE4D0EDF737E364FDA4
 ```
 
 运行时 DLL：
@@ -860,13 +904,13 @@ main.dll
 SHA256：
 
 ```text
-65FB68B291FDBADCB7C2D24A4AEB341285F30BEB80D37AA8A0C1347EB1192FEF
+84AF394E612F45C78E99EE6449F9AC2985353B4DC97E23A8CF97B75B17593037
 ```
 
 大小：
 
 ```text
-482816 bytes
+152064 bytes
 ```
 
 只有从 PerfectBlockTrainer 官方发布渠道获取的包应被视为官方版本。
