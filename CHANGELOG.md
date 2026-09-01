@@ -1,5 +1,60 @@
 # PerfectBlockTrainer Changelog
 
+## V7.0.4 — Combat Reliability & Mixed-Threat Improvements
+
+### Added
+
+- Added validated direct-contact timing support for Black Ant projectiles.
+- Added improved timing-prompt support for the Mysterious Stranger boss.
+- Added stronger support for mixed melee and ranged combat.
+- Added further coverage for previously problematic close-range attacks.
+
+### Changed
+
+- Improved QTE reliability during multi-enemy combat.
+- Improved handling when melee, ranged, and projectile threats overlap.
+- Improved multi-hit and special-attack timing behavior.
+- Improved Earwig RockThrow prompt behavior during mixed combat.
+- Improved handling of overlapping threats so active prompts are less likely to be visually displaced by another attack.
+- Reduced redundant runtime processing to improve efficiency during normal gameplay.
+- Updated compatibility and release validation for UE4SS_Grounded2 1.0.3.
+
+### Fixed
+
+- Fixed a mixed-combat prompt ownership issue that could cause an active ranged-attack QTE to be visually replaced by another incoming attack.
+- Fixed the close-range Tick bite route that could be blocked in-game but previously fail to produce a QTE.
+- Improved timing consistency for several Mysterious Stranger multi-hit and special attacks.
+- Improved Black Ant projectile prompt timing and cleanup when the projectile misses or becomes invalid.
+- Preserved validated blockable / unblockable warning behavior across the updated attack paths.
+
+### Validated
+
+- Normal melee combat — PASS
+- Consecutive attacks — PASS
+- Multi-hit attacks — PASS
+- Multiple simultaneous threats — PASS
+- Mixed melee and ranged combat — PASS
+- Moving-body / charge attacks — PASS
+- Ballistic projectile paths — PASS
+- Black Ant direct-contact projectile timing — PASS
+- Earwig RockThrow during mixed combat — PASS
+- Mysterious Stranger boss timing prompts — PASS
+- Previously problematic close-range attacks — PASS
+- Blockable / unblockable warning behavior — PASS
+- Save / map lifecycle — PASS
+- Ring / Pointer cleanup — PASS
+- Final public runtime acceptance — PASS
+- Player-style clean-install release test — PASS
+- Nexus download round-trip package identity — PASS
+- Crash during accepted final release testing — NO
+
+### Compatibility
+
+- Grounded 2
+- UE4SS_Grounded2 1.0.3
+
+---
+
 ## V7.0.3 — Semantic Prediction & Coverage Expansion
 
 ### Added
