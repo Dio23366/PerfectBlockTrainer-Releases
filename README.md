@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="media/cover.png" alt="PerfectBlockTrainer V7.0.3" width="100%">
+  <img src="media/cover.png" alt="PerfectBlockTrainer V7.0.4" width="100%">
 </p>
 
-<h1 align="center">PerfectBlockTrainer V7.0.3</h1>
+<h1 align="center">PerfectBlockTrainer V7.0.4</h1>
 
 <p align="center">
   <b>Real-time Perfect Block Timing Assistant for Grounded 2</b>
@@ -22,28 +22,26 @@
 
 ---
 
-## V7.0.3 Semantic Prediction & Coverage Expansion / 语义预测与覆盖扩展
+## V7.0.4 Combat Reliability & Mixed-Threat Improvements / 实战可靠性与混合威胁改进
 
-**PerfectBlockTrainer V7.0.3** expands attack coverage, improves semantic handling of blockable and unblockable attacks, and adds new validated prediction paths.
+**PerfectBlockTrainer V7.0.4** focuses on improving QTE reliability during real combat, especially when multiple enemies, consecutive attacks, melee attacks, and ranged attacks overlap.
 
-V7.0.3 also improves multi-phase attack handling and introduces validated ballistic projectile prediction while preserving the core Perfect Block training workflow.
+V7.0.4 also improves multi-hit and special-attack timing, expands validated projectile handling, and reduces unnecessary runtime work while preserving the core Perfect Block training workflow.
 
-> **PerfectBlockTrainer V7.0.3** 扩展了攻击覆盖范围，完善了可格挡 / 不可格挡攻击的语义处理，并加入新的实测预测路径。  
+> **PerfectBlockTrainer V7.0.4** 重点提升复杂实战环境下的 QTE 提示可靠性，尤其针对多名敌人同时进攻、连续攻击，以及近战和远程攻击交错出现的情况。  
 >
-> 本版本同时改进了多阶段攻击处理，并加入经过实测验证的弹道投射物预测，同时继续保持原有的完美格挡训练与时机可视化体验。
+> 本版本同时改进多段攻击与特殊攻击的时机判断，扩展经过实战验证的射弹支持，并减少不必要的重复处理，同时保持原有的完美格挡训练与时机可视化体验。
 
-### V7.0.3 highlights / 本次主要更新
+### V7.0.4 highlights / 本次主要更新
 
-- Expanded attack coverage / 扩展攻击覆盖
-- Improved blockable vs. unblockable attack semantics / 改进可格挡与不可格挡攻击语义
-- Ballistic projectile prediction / 弹道投射物预测
-- Earwig RockThrow support / 蠼螋投石攻击支持
-- Improved Mosquito DiveBomb multi-phase handling / 改进蚊子俯冲攻击的多阶段处理
-- Correct suppression of non-damaging post-pass QTEs / 正确抑制无伤害阶段的错误 QTE
-- Headless Cockroach phase-2 QTE suppression / 无头蟑螂第二阶段错误 QTE 抑制
-- Expanded semantic attack identity coverage / 扩展攻击身份与语义覆盖
-- Runtime stability validation / 运行稳定性验证
-- Public release hardening / 公共发行版本加固
+- Improved QTE reliability in multi-enemy combat / 提升多敌人混战中的 QTE 提示稳定性
+- Improved mixed melee and ranged attack handling / 改善近战与远程攻击同时出现时的提示处理
+- Improved multi-hit and special attack timing / 改善多段攻击和特殊攻击的时机判断
+- Added validated direct-contact timing for Black Ant projectiles / 增加黑蚂蚁射弹直接命中时的已验证时机支持
+- Improved Earwig RockThrow prompts during mixed combat / 改善蠼螋投石在混战中的提示表现
+- Improved several previously problematic close-range attacks / 改善多种此前容易漏提示或提示异常的近距离攻击
+- Improved timing prompt support for the Mysterious Stranger boss / 改善神秘人 Boss 的攻击时机提示
+- Reduced redundant runtime processing for better performance / 减少不必要的重复处理并改善运行效率
 - Clean-install release validation / 玩家发行包全新安装验证
 
 Compatible runtime:
@@ -94,17 +92,18 @@ PerfectBlockTrainer currently supports multiple production prediction paths:
 - Save / map lifecycle handling
 - QTE Ring / Pointer cleanup
 
-Representative validated V7.0.3 cases include:
+Representative validated V7.0.4 cases include:
 
-- Mosquito attacks
-- Mosquito DiveBomb
-- Mosquito Combo
-- Earwig RockThrow
-- Mantis combat smoke testing
+- Multi-enemy combat
+- Mixed melee and ranged combat
+- Multi-hit and special attack sequences
+- Mysterious Stranger boss attacks
+- Black Ant direct-contact projectiles
+- Earwig RockThrow during mixed combat
+- Previously problematic close-range attacks
 - Moving-body / charge attacks
-- Multi-hit combat
 - Multiple simultaneous threats
-- Unblockable warning behavior
+- Blockable / unblockable warning behavior
 
 ---
 
@@ -153,7 +152,7 @@ The current demo showcases:
 
 ▶ **[PerfectBlockTrainer Complete Installation Guide](https://www.bilibili.com/video/BV1ws4R6fEYL/)**
 
-The installation video was originally recorded for an earlier V7 release, but the core installation flow remains applicable to V7.0.3 when using **UE4SS_Grounded2 1.0.3**.
+The installation video was originally recorded for an earlier V7 release, but the core installation flow remains applicable to V7.0.4 when using **UE4SS_Grounded2 1.0.3**.
 
 Installation flow:
 
@@ -242,9 +241,9 @@ If an attack becomes invalid, misses, changes target, or enters a phase that sho
 
 ---
 
-## V7.0.3 Runtime Validation / V7.0.3 运行验证
+## V7.0.4 Runtime Validation / V7.0.4 运行验证
 
-The final V7.0.3 public runtime passed both automated and manual regression testing.
+The final V7.0.4 public runtime passed automated release checks, manual gameplay acceptance, and a player-style clean-install test using the same final `RELEASE.zip` intended for public distribution.
 
 Representative validated areas include:
 
@@ -252,48 +251,38 @@ Representative validated areas include:
 - Consecutive attacks — **PASS**
 - Multi-hit attacks — **PASS**
 - Multiple simultaneous threats — **PASS**
+- Mixed melee and ranged combat — **PASS**
 - Moving-body / charge attacks — **PASS**
-- Linear projectile paths — **PASS**
 - Ballistic projectile paths — **PASS**
-- Mosquito combat — **PASS**
-- Mosquito DiveBomb first damaging pass — **PASS**
-- Mosquito DiveBomb post-first-pass QTE suppression — **PASS**
-- Mosquito Combo — **PASS**
-- Earwig RockThrow QTE — **PASS**
-- Earwig RockThrow timing — **PASS**
-- Earwig RockThrow Perfect Block — **PASS**
-- Unblockable red warning behavior — **PASS**
-- Mantis release smoke test — **PASS**
+- Black Ant direct-contact projectile timing — **PASS**
+- Earwig RockThrow during mixed combat — **PASS**
+- Mysterious Stranger boss timing prompts — **PASS**
+- Previously problematic close-range attacks — **PASS**
+- Blockable / unblockable warning behavior — **PASS**
 - Save / map lifecycle — **PASS**
 - Ring / Pointer cleanup — **PASS**
 - Clean-install release test — **PASS**
 - Crash during accepted final regression — **NO**
 
-The final public `RELEASE.zip` was also installed from a clean PerfectBlockTrainer state and tested using the same package intended for players.
+The final public `RELEASE.zip` was installed from a clean PerfectBlockTrainer state and tested as a player-distributed package before upload.
 
-> 最终公开版不仅通过了开发阶段 Runtime Regression，还重新从玩家发行包进行了 Clean Install。  
+> 最终 V7.0.4 公开版不仅完成了发布前的运行验证和人工实战验收，还重新从玩家实际下载使用的 `RELEASE.zip` 进行了全新安装测试。  
 >
-> 使用正式 `RELEASE.zip` 安装后，螳螂、蚊子和投石等代表性场景均完成 Smoke Test，并确认无闪退。
+> 正式发布包能够正常加载并进入游戏，代表性战斗场景中的 QTE、混战提示和基础稳定性均通过验收。
 
 ---
 
-## Public Release Hardening / 公共发行加固
+## Public Release Build / 公开发行版本
 
-V7.0.3 introduces a dedicated hardened public build.
+V7.0.4 uses a dedicated public release build that contains the gameplay functionality required by players without carrying unnecessary development-only diagnostics.
 
-The public distribution removes development-only material that is not required for normal gameplay, including nonessential development diagnostics and probe-only data.
+This does **not** change the validated attack-prediction or QTE behavior.
 
-The public build also sanitizes development build-path information.
+The final public build was built, checked, installed as the exact release package, and tested again before publication.
 
-This hardening process does **not** intentionally change the validated gameplay prediction behavior.
-
-The hardened build was rebuilt, deployed, runtime-tested, manually accepted, clean-installed, and tested again before release.
-
-> V7.0.3 公共发行版使用单独的 Hardened Public Build。  
+> V7.0.4 使用独立的公开发行版本，只保留玩家正常使用所需的功能。  
 >
-> 玩家版本移除了正常游戏运行不需要的开发诊断与 Probe 数据，并清理了开发环境路径信息。  
->
-> 加固后重新执行了 Build、Deploy、Runtime Regression、人工验证以及 Clean Install 测试。
+> 这不会改变已经验证过的攻击预测与 QTE 行为。最终公开包在发布前又以玩家实际安装方式进行了独立测试。
 
 ---
 
@@ -327,7 +316,7 @@ The mod predicts and visualizes timing.
 
 ## Requirements / 依赖
 
-PerfectBlockTrainer V7.0.3 requires:
+PerfectBlockTrainer V7.0.4 requires:
 
 1. **Grounded 2**
 2. **UE4SS_Grounded2 1.0.3**
@@ -364,13 +353,13 @@ Installation video:
 Current release package:
 
 ```text
-PerfectBlockTrainer_V7.0.3_RELEASE.zip
+PerfectBlockTrainer_V7.0.4_RELEASE.zip
 ```
 
 Package structure:
 
 ```text
-PerfectBlockTrainer_V7.0.3_RELEASE/
+PerfectBlockTrainer_V7.0.4_RELEASE/
 ├─ Mods/
 │  └─ PerfectBlockTrainerCpp/
 │     └─ dlls/
@@ -411,11 +400,11 @@ Test Ring / Pointer / QTE
 
 ## Clean Installation / 全新安装验证
 
-V7.0.3 was tested using a player-style clean installation.
+V7.0.4 was tested using a player-style clean installation.
 
 The previous PerfectBlockTrainer installation was removed, and the final public `RELEASE.zip` was installed without using development build artifacts.
 
-The clean-installed release successfully passed representative gameplay smoke tests.
+The clean-installed release successfully passed representative gameplay and basic runtime checks.
 
 This verifies that the public package itself contains the files required for normal installation and operation.
 
@@ -455,9 +444,10 @@ Missing / Early / Late / Incorrect QTE
 Game version
 PerfectBlockTrainer version
 UE4SS version
-UE4SS.log
 Video / GIF if possible
 ```
+
+If the issue can be reproduced consistently but cannot be reproduced during development, `UE4SS.log` may also be helpful.
 
 Recommended issue categories:
 
@@ -471,7 +461,6 @@ PROJECTILE
 UI
 PERFORMANCE
 COMPATIBILITY
-FEATURE REQUEST
 ```
 
 Different attacks from the same creature are useful to report separately.
@@ -482,25 +471,25 @@ Different attacks from the same creature are useful to report separately.
 
 Only packages distributed through the official PerfectBlockTrainer channels should be considered official builds.
 
-### PerfectBlockTrainer V7.0.3 Release ZIP
+### PerfectBlockTrainer V7.0.4 Release ZIP
 
 ```text
-PerfectBlockTrainer_V7.0.3_RELEASE.zip
+PerfectBlockTrainer_V7.0.4_RELEASE.zip
 
 SHA256
-FEE010BAEAA23E1722E403F4D70E1BCC3F1066A2496A3DDE6F5D0304C906A55E
+4A38939420C82F592E842B57B84CD931AFF689E0EF7F6BE4D0EDF737E364FDA4
 ```
 
-### PerfectBlockTrainer V7.0.3 Runtime DLL
+### PerfectBlockTrainer V7.0.4 Runtime DLL
 
 ```text
 main.dll
 
 SHA256
-65FB68B291FDBADCB7C2D24A4AEB341285F30BEB80D37AA8A0C1347EB1192FEF
+84AF394E612F45C78E99EE6449F9AC2985353B4DC97E23A8CF97B75B17593037
 
 Size
-482816 bytes
+152064 bytes
 ```
 
 ### LogicMods
@@ -572,7 +561,7 @@ Grounded 2 is developed by **Obsidian Entertainment** and published by **Xbox Ga
 
 ## Version
 
-**V7.0.3 — Semantic Prediction & Coverage Expansion**
+**V7.0.4 — Combat Reliability & Mixed-Threat Improvements**
 
 Current public runtime:
 
@@ -585,6 +574,7 @@ Current release channel:
 Previous public releases:
 
 ```text
+V7.0.3 — Semantic Prediction & Coverage Expansion
 V7.0.2 — Performance Fix
 V7.0.1 — UE4SS_Grounded2 1.0.3 Compatibility Update
 V7.0   — First Public Release
