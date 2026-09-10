@@ -1,4 +1,4 @@
-# PerfectBlockTrainer V7.0.4
+# PerfectBlockTrainer V7.0.5
 
 **Installation Guide / 安装指南**
 
@@ -11,8 +11,8 @@
 You need:
 
 1. **Grounded 2**
-2. **UE4SS_Grounded2 1.0.3**
-3. **PerfectBlockTrainer V7.0.4**
+2. **UE4SS_Grounded2 1.0.4**
+3. **PerfectBlockTrainer V7.0.5**
 
 ## 2. Find the Grounded 2 Installation Folder
 
@@ -31,7 +31,7 @@ Grounded2
 
 All paths below start from this `Grounded2` folder.
 
-## 3. Install UE4SS_Grounded2 1.0.3
+## 3. Install UE4SS_Grounded2 1.0.4
 
 Open:
 
@@ -39,7 +39,7 @@ Open:
 Grounded2\Augusta\Binaries\Win64
 ```
 
-Extract **UE4SS_Grounded2 1.0.3**.
+Extract **UE4SS_Grounded2 1.0.4**.
 
 Copy:
 
@@ -76,7 +76,7 @@ Then completely exit the game.
 Extract:
 
 ```text
-PerfectBlockTrainer_V7.0.4_RELEASE.zip
+PerfectBlockTrainer_V7.0.5_RELEASE.zip
 ```
 
 Open:
@@ -242,7 +242,7 @@ If this works, installation is complete.
 
 ### Game Does Not Start
 
-If the game cannot reach the main menu after installing UE4SS but before installing PerfectBlockTrainer, check the **UE4SS_Grounded2 1.0.3** installation first.
+If the game cannot reach the main menu after installing UE4SS but before installing PerfectBlockTrainer, check the **UE4SS_Grounded2 1.0.4** installation first.
 
 ### PerfectBlockTrainer Does Not Appear
 
@@ -300,7 +300,7 @@ Completely exit **Grounded 2** before updating.
 
 ### Updating from V7.0.3
 
-V7.0.4 improves combat reliability, mixed melee/ranged handling, multi-hit and special-attack timing, projectile support, and runtime efficiency.
+V7.0.5 improves combat reliability, mixed melee/ranged handling, multi-hit and special-attack timing, projectile support, and runtime efficiency.
 
 Replace the old:
 
@@ -308,9 +308,9 @@ Replace the old:
 Grounded2\Augusta\Binaries\Win64\ue4ss\Mods\PerfectBlockTrainerCpp
 ```
 
-with the V7.0.4 `PerfectBlockTrainerCpp` folder.
+with the V7.0.5 `PerfectBlockTrainerCpp` folder.
 
-The three LogicMods files in V7.0.4 have the same validated identities as V7.0.3, so they do not need to be replaced when updating directly from V7.0.3.
+The three LogicMods files in V7.0.5 have the same validated identities as V7.0.3, so they do not need to be replaced when updating directly from V7.0.3.
 
 Then confirm:
 
@@ -322,7 +322,7 @@ PerfectBlockTrainerCpp : 1
 
 ### Updating from V7.0.2
 
-V7.0.4 can also be installed directly over V7.0.2.
+V7.0.5 can also be installed directly over V7.0.2.
 
 Replace the old:
 
@@ -330,7 +330,7 @@ Replace the old:
 Grounded2\Augusta\Binaries\Win64\ue4ss\Mods\PerfectBlockTrainerCpp
 ```
 
-with the V7.0.4 `PerfectBlockTrainerCpp` folder.
+with the V7.0.5 `PerfectBlockTrainerCpp` folder.
 
 The current three LogicMods files retain the same validated identities used by V7.0.2 / V7.0.3, so they do not need to be replaced if those exact files are already installed.
 
@@ -350,7 +350,7 @@ Replace the old:
 Grounded2\Augusta\Binaries\Win64\ue4ss\Mods\PerfectBlockTrainerCpp
 ```
 
-with the V7.0.4 `PerfectBlockTrainerCpp` folder.
+with the V7.0.5 `PerfectBlockTrainerCpp` folder.
 
 Then make sure all three current LogicMods files are installed together in:
 
@@ -390,7 +390,7 @@ Grounded2\Augusta\Content\Paks\LogicMods\PerfectBlockTrainer.ucas
 Grounded2\Augusta\Content\Paks\LogicMods\PerfectBlockTrainer.utoc
 ```
 
-Then install V7.0.4 again using Sections 5–7 above.
+Then install V7.0.5 again using Sections 5–7 above.
 
 ## 11. Uninstall
 
@@ -414,18 +414,18 @@ Then remove or disable the `PerfectBlockTrainerCpp` entry in `mods.txt`.
 
 Do not delete files belonging to other mods.
 
-## 12. Official V7.0.4 Release Identity
+## 12. Official V7.0.5 Release Identity
 
 Release package:
 
 ```text
-PerfectBlockTrainer_V7.0.4_RELEASE.zip
+PerfectBlockTrainer_V7.0.5_RELEASE.zip
 ```
 
 SHA256:
 
 ```text
-4A38939420C82F592E842B57B84CD931AFF689E0EF7F6BE4D0EDF737E364FDA4
+7F1A48CDDDA8CE3AF4C39540E4DA2A922990B613BD5F666F8E592951E456A541
 ```
 
 Runtime DLL:
@@ -437,20 +437,20 @@ main.dll
 SHA256:
 
 ```text
-84AF394E612F45C78E99EE6449F9AC2985353B4DC97E23A8CF97B75B17593037
+50F6B6FAE66C772B772FD04783E4947394D6B86F5CD6D3D80442C7B848300ECD
 ```
 
 Size:
 
 ```text
-152064 bytes
+514560 bytes
 ```
 
 Only packages distributed through the official PerfectBlockTrainer channels should be considered official builds.
 
 ## 13. Final Checklist
 
-- [ ] UE4SS_Grounded2 1.0.3 installed
+- [ ] UE4SS_Grounded2 1.0.4 installed
 - [ ] Game reaches the main menu after UE4SS installation
 - [ ] `PerfectBlockTrainerCpp\dlls\main.dll` is in the correct folder
 - [ ] `PerfectBlockTrainer.pak` installed
@@ -474,8 +474,8 @@ Only packages distributed through the official PerfectBlockTrainer channels shou
 你需要：
 
 1. **Grounded 2 / 禁闭求生 2**
-2. **UE4SS_Grounded2 1.0.3**
-3. **PerfectBlockTrainer V7.0.4**
+2. **UE4SS_Grounded2 1.0.4**
+3. **PerfectBlockTrainer V7.0.5**
 
 ## 2. 找到 Grounded 2 安装目录
 
@@ -494,7 +494,7 @@ Grounded2
 
 后续所有路径都从这个 `Grounded2` 文件夹开始。
 
-## 3. 安装 UE4SS_Grounded2 1.0.3
+## 3. 安装 UE4SS_Grounded2 1.0.4
 
 进入：
 
@@ -502,7 +502,7 @@ Grounded2
 Grounded2\Augusta\Binaries\Win64
 ```
 
-解压 **UE4SS_Grounded2 1.0.3**。
+解压 **UE4SS_Grounded2 1.0.4**。
 
 把：
 
@@ -539,7 +539,7 @@ Win64
 解压：
 
 ```text
-PerfectBlockTrainer_V7.0.4_RELEASE.zip
+PerfectBlockTrainer_V7.0.5_RELEASE.zip
 ```
 
 打开：
@@ -707,7 +707,7 @@ Pointer 运动
 
 ### 游戏无法启动
 
-如果只安装 UE4SS、还没有安装 PerfectBlockTrainer 时，游戏就已经无法进入主菜单，请先检查 **UE4SS_Grounded2 1.0.3** 的安装。
+如果只安装 UE4SS、还没有安装 PerfectBlockTrainer 时，游戏就已经无法进入主菜单，请先检查 **UE4SS_Grounded2 1.0.4** 的安装。
 
 ### PerfectBlockTrainer 没有出现
 
@@ -761,13 +761,13 @@ PerfectBlockTrainerCpp : 1
 ...\Mods\PerfectBlockTrainerCpp\dlls\main.dll
 ```
 
-## 10. 从旧版本更新到 V7.0.4
+## 10. 从旧版本更新到 V7.0.5
 
 更新前请先完全退出 **Grounded 2**。
 
 ### 从 V7.0.3 更新
 
-V7.0.4 主要提升混战中的提示稳定性，改善近战与远程攻击同时出现时的处理、多段与特殊攻击的时机判断、射弹支持以及运行效率。
+V7.0.5 主要提升混战中的提示稳定性，改善近战与远程攻击同时出现时的处理、多段与特殊攻击的时机判断、射弹支持以及运行效率。
 
 把旧的：
 
@@ -775,9 +775,9 @@ V7.0.4 主要提升混战中的提示稳定性，改善近战与远程攻击同�
 Grounded2\Augusta\Binaries\Win64\ue4ss\Mods\PerfectBlockTrainerCpp
 ```
 
-替换成 V7.0.4 的 `PerfectBlockTrainerCpp` 文件夹。
+替换成 V7.0.5 的 `PerfectBlockTrainerCpp` 文件夹。
 
-V7.0.4 中的三个 LogicMods 文件与 V7.0.3 使用的是同一组已经验证过的文件，因此如果你是从 V7.0.3 直接更新，不需要重新替换 LogicMods。
+V7.0.5 中的三个 LogicMods 文件与 V7.0.3 使用的是同一组已经验证过的文件，因此如果你是从 V7.0.3 直接更新，不需要重新替换 LogicMods。
 
 然后确认：
 
@@ -789,7 +789,7 @@ PerfectBlockTrainerCpp : 1
 
 ### 从 V7.0.2 更新
 
-V7.0.4 也可以直接从 V7.0.2 更新。
+V7.0.5 也可以直接从 V7.0.2 更新。
 
 把旧的：
 
@@ -797,7 +797,7 @@ V7.0.4 也可以直接从 V7.0.2 更新。
 Grounded2\Augusta\Binaries\Win64\ue4ss\Mods\PerfectBlockTrainerCpp
 ```
 
-替换成 V7.0.4 的 `PerfectBlockTrainerCpp` 文件夹。
+替换成 V7.0.5 的 `PerfectBlockTrainerCpp` 文件夹。
 
 当前三个 LogicMods 文件与 V7.0.2 / V7.0.3 使用的是同一组已经验证过的文件。如果你本地已经安装的是这些文件，就不需要再次替换。
 
@@ -817,7 +817,7 @@ PerfectBlockTrainerCpp : 1
 Grounded2\Augusta\Binaries\Win64\ue4ss\Mods\PerfectBlockTrainerCpp
 ```
 
-替换成 V7.0.4 的 `PerfectBlockTrainerCpp` 文件夹。
+替换成 V7.0.5 的 `PerfectBlockTrainerCpp` 文件夹。
 
 然后确认当前三个 LogicMods 文件都一起安装在：
 
@@ -857,7 +857,7 @@ Grounded2\Augusta\Content\Paks\LogicMods\PerfectBlockTrainer.ucas
 Grounded2\Augusta\Content\Paks\LogicMods\PerfectBlockTrainer.utoc
 ```
 
-然后按照上面的第 5–7 节重新安装 V7.0.4。
+然后按照上面的第 5–7 节重新安装 V7.0.5。
 
 ## 11. 卸载
 
@@ -881,18 +881,18 @@ Grounded2\Augusta\Content\Paks\LogicMods\PerfectBlockTrainer.utoc
 
 不要删除其他 Mod 的文件。
 
-## 12. V7.0.4 官方发行身份
+## 12. V7.0.5 官方发行身份
 
 Release 包：
 
 ```text
-PerfectBlockTrainer_V7.0.4_RELEASE.zip
+PerfectBlockTrainer_V7.0.5_RELEASE.zip
 ```
 
 SHA256：
 
 ```text
-4A38939420C82F592E842B57B84CD931AFF689E0EF7F6BE4D0EDF737E364FDA4
+7F1A48CDDDA8CE3AF4C39540E4DA2A922990B613BD5F666F8E592951E456A541
 ```
 
 运行时 DLL：
@@ -904,20 +904,20 @@ main.dll
 SHA256：
 
 ```text
-84AF394E612F45C78E99EE6449F9AC2985353B4DC97E23A8CF97B75B17593037
+50F6B6FAE66C772B772FD04783E4947394D6B86F5CD6D3D80442C7B848300ECD
 ```
 
 大小：
 
 ```text
-152064 bytes
+514560 bytes
 ```
 
 只有从 PerfectBlockTrainer 官方发布渠道获取的包应被视为官方版本。
 
 ## 13. 最终检查表
 
-- [ ] 已安装 UE4SS_Grounded2 1.0.3
+- [ ] 已安装 UE4SS_Grounded2 1.0.4
 - [ ] 安装 UE4SS 后可以正常进入主菜单
 - [ ] `PerfectBlockTrainerCpp\dlls\main.dll` 路径正确
 - [ ] 已安装 `PerfectBlockTrainer.pak`
