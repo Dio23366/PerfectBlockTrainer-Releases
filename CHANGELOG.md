@@ -1,5 +1,42 @@
 # PerfectBlockTrainer Changelog
 
+## V7.0.5 — Combat Targeting & QTE Stability Improvements
+
+### Improved
+
+- Improved QTE reliability when several enemies attack at the same time.
+- Improved prompt targeting during mixed Wasp + Mosquito combat.
+- Improved handling when an enemy briefly changes target state during an attack, reducing cases where a valid QTE could disappear or switch to the wrong attack.
+- Improved QTE cleanup for charge and movement-based attacks.
+- Reduced unnecessary background checks when there is no active incoming threat.
+- Kept the existing projectile timing and prediction behavior unchanged.
+
+### Fixed
+
+- Fixed rare mixed-combat cases where the correct QTE could be suppressed by another nearby attack.
+- Fixed rare cases where a charge / movement attack could leave its QTE visible after the attack had already ended.
+- Fixed an edge case where an old QTE could reappear after the corresponding attack was already over.
+- Fixed a rare long-lasting stuck-QTE case caused by an attack ending without the usual cleanup event.
+
+### Tested
+
+- Wasp + Mosquito mixed combat — **PASS**
+- Normal melee attacks — **PASS**
+- Charge / movement attacks — **PASS**
+- Projectile attacks — **PASS**
+- QTE cleanup after attacks end — **PASS**
+- Multiple overlapping threats — **PASS**
+- Fresh-install release test — **PASS**
+- General performance check — **PASS**
+- Crash during accepted final release testing — **NO**
+
+### Compatibility
+
+- Grounded 2
+- UE4SS_Grounded2 1.0.4
+
+---
+
 ## V7.0.4 — Combat Reliability & Mixed-Threat Improvements
 
 ### Added
@@ -17,7 +54,7 @@
 - Improved Earwig RockThrow prompt behavior during mixed combat.
 - Improved handling of overlapping threats so active prompts are less likely to be visually displaced by another attack.
 - Reduced redundant runtime processing to improve efficiency during normal gameplay.
-- Updated compatibility and release validation for UE4SS_Grounded2 1.0.3.
+- Updated compatibility and release validation for UE4SS_Grounded2 1.0.4.
 
 ### Fixed
 
@@ -51,7 +88,7 @@
 ### Compatibility
 
 - Grounded 2
-- UE4SS_Grounded2 1.0.3
+- UE4SS_Grounded2 1.0.4
 
 ---
 
@@ -104,7 +141,7 @@
 
 ### Compatibility
 
-- UE4SS_Grounded2 1.0.3
+- UE4SS_Grounded2 1.0.4
 
 ---
 
@@ -117,9 +154,9 @@
 
 ---
 
-## V7.0.1 — UE4SS_Grounded2 1.0.3 Compatibility Update
+## V7.0.1 — UE4SS_Grounded2 1.0.4 Compatibility Update
 
-- Updated compatibility for UE4SS_Grounded2 1.0.3.
+- Updated compatibility for UE4SS_Grounded2 1.0.4.
 - Revalidated the established V7 gameplay baseline.
 - Updated installation guidance and public packaging.
 
