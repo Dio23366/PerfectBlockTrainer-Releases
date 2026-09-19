@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="media/cover.png" alt="PerfectBlockTrainer V7.0.5" width="100%">
+  <img src="media/cover.png" alt="PerfectBlockTrainer V7.0.6" width="100%">
 </p>
 
-<h1 align="center">PerfectBlockTrainer V7.0.5</h1>
+<h1 align="center">PerfectBlockTrainer V7.0.6</h1>
 
 <p align="center">
   <b>Real-time Perfect Block Timing Assistant for Grounded 2</b>
@@ -22,36 +22,37 @@
 
 ---
 
-## V7.0.5 Combat Targeting & QTE Stability Improvements / 混战目标判断与 QTE 稳定性改进
+## V7.0.6 Expanded Combat Coverage & Boss Timing Improvements / 扩展攻击覆盖与 Boss 时序改进
 
-**PerfectBlockTrainer V7.0.5** improves QTE reliability during busy combat, especially when several enemies attack at the same time.
+**PerfectBlockTrainer V7.0.6** expands validated QTE coverage for more complex enemies and bosses while improving timing accuracy and readability in multi-threat combat.
 
-The biggest changes are easier to notice in mixed Wasp + Mosquito fights and in charge / movement attacks that end in unusual ways.
+The release builds on the stable V7.0.5 behavior. New changes are scoped to validated attacks and presentation cases instead of applying broad global rules.
 
-> **PerfectBlockTrainer V7.0.5** 主要提升复杂混战中的 QTE 提示稳定性，尤其是在多个敌人同时攻击时。  
+> **PerfectBlockTrainer V7.0.6** 在 V7.0.5 稳定行为基础上，进一步扩展复杂敌人和 Boss 的 QTE 攻击覆盖，并提升复杂攻击时序与多威胁场景下的提示可读性。  
 >
-> 这次改动在黄蜂 + 蚊子混战，以及冲刺 / 位移类攻击结束时最明显。
+> 本次修改尽量限定在已经验证的敌人、攻击和显示场景中，避免为了修复单个特殊攻击而改变无关攻击的既有行为。
 
-### V7.0.5 highlights / 本次主要更新
+### V7.0.6 highlights / 本次主要更新
 
-- More reliable QTE targeting during multi-enemy combat / 多敌人同时攻击时，QTE 目标判断更稳定
-- Better Wasp + Mosquito mixed-combat handling / 改善黄蜂 + 蚊子混战时的提示稳定性
-- Reduced cases where a valid QTE disappears when an enemy briefly changes target state / 减少敌人短暂改变目标状态时有效 QTE 意外消失的情况
-- Reduced cases where another nearby attack incorrectly takes over the current prompt / 减少附近其他攻击错误抢占当前提示的情况
-- Better QTE cleanup for charge / movement attacks / 改善冲刺与位移攻击结束后的 QTE 清理
-- Fixed rare stuck or reappearing QTEs after an attack has already ended / 修复少数攻击结束后 QTE 仍卡住或再次出现的问题
-- Preserved the existing projectile timing and prediction behavior / 保持现有射弹时机与预测行为
-- Reduced unnecessary background checks when there is no active incoming threat / 没有有效威胁时减少不必要的后台检查
+- Expanded Lizard boss QTE coverage and timing validation / 扩展并完善 Lizard Boss 多种攻击的 QTE 覆盖与时序验证
+- Improved Lizard `Bite_01` double-contact handling and Combo3 follow-up timing / 改善 `Bite_01` 双接触判定与 Combo3 后续攻击时序
+- Expanded validated ToeBiter family support, including key OGRE / Leviathan variants / 扩展 ToeBiter 家族及 OGRE / Leviathan 关键变体的已验证支持
+- Completed representative AXL attack coverage / 完成 AXL 主要攻击路线的实战闭环
+- Completed TayzT / RuzT / SphereBot combo third-hit timing / 补齐并验证 TayzT / RuzT / SphereBot 连击第三击时序
+- Fixed Cockroach Queen and Berserker General Headless Spray timing / 修复 Cockroach Queen 与 Berserker General 无头喷射攻击时序
+- Added **GOLD overlap QTE presentation** for overlapping green Perfect Block windows / 新增多个绿色 Perfect Block 窗口重叠时的 **GOLD / 金色重叠区域**
+- Improved attack commitment / cancellation filtering without sacrificing normal player reaction time / 改善复杂攻击启动与取消判断，同时避免过滤机制吃掉正常反应时间
+- Public release built with dedicated hardening and final clean-install runtime validation / 公开版本经过独立 Release Hardening 与最终 clean-install 实机验证
 
-### Performance / 性能
+### GOLD overlap presentation / GOLD 重叠提示
 
-V7.0.5 reduces some unnecessary work while no active threat exists and passed the final general performance check.
+When two independent blockable attacks have overlapping green Perfect Block windows, the shared overlap region is displayed in **GOLD**.
 
-This release does **not** claim a specific FPS increase.
+This is a readability improvement only. It does **not** change attack timing, window size, or Grounded 2's Perfect Block rules.
 
-> V7.0.5 减少了无有效威胁时的一部分不必要后台工作，并通过最终性能检查。  
+> 当两个独立可格挡攻击的绿色 QTE 时间窗口发生重叠时，公共重叠区会使用 **GOLD / 金色** 显示。  
 >
-> 本版本不会宣称未经正式基准测试支持的具体 FPS 提升。
+> 这一变化只影响提示显示，不会修改攻击时机、Perfect Block 窗口大小或游戏自身的 Perfect Block 判定。
 
 Compatible runtime:
 
@@ -103,14 +104,17 @@ PerfectBlockTrainer currently supports multiple production prediction paths:
 
 Representative current production coverage includes:
 
-- Mixed Wasp + Mosquito combat
-- Multi-enemy combat
+- Multi-enemy and mixed-threat combat
 - Mixed melee and ranged combat
 - Multi-hit and special attack sequences
+- Lizard boss representative attack routes
+- ToeBiter family validated routes, including key OGRE / Leviathan variants
+- AXL representative attack routes
+- TayzT / RuzT / SphereBot combo coverage
+- Cockroach Queen / Berserker General Headless Spray timing
 - Mysterious Stranger boss attacks
 - Black Ant direct-contact projectiles
 - Earwig RockThrow during mixed combat
-- Previously problematic close-range attacks
 - Moving-body / charge attacks
 - Multiple simultaneous threats
 - Blockable / unblockable warning behavior
@@ -122,10 +126,13 @@ Representative current production coverage includes:
 PerfectBlockTrainer uses different visual cues depending on attack semantics:
 
 - **Green QTE** — Perfect Block opportunity
+- **GOLD overlap** — shared overlap area of two blockable green Perfect Block windows
 - **Red warning** — Unblockable attack / dodge warning
 - **No cue** — attacks that should not produce a Perfect Block prompt
 
 > **绿色 QTE** 表示存在 Perfect Block 时机。  
+>
+> **GOLD / 金色重叠区域** 表示两个独立可格挡攻击的绿色时间窗口发生重叠。  
 >
 > **红色提示** 表示该攻击不可进行 Perfect Block，应作为闪避 / 危险警告理解。  
 >
@@ -145,24 +152,22 @@ It specifically represents an **unblockable warning** in the current PerfectBloc
 
 This is the long-term PerfectBlockTrainer gameplay demo and will be updated as the mod evolves.
 
-Current demo version: **V7.0.3**
+The long-term gameplay demo is maintained separately and may be updated alongside the current release.
 
-The current demo showcases:
+The long-term demo focuses on:
 
-- Multiple simultaneous threats / 多威胁同时预测
-- Multi-hit prediction / 多段连击预测
-- Timing mix-ups / 快慢刀
-- Moving-body / charge prediction / 动态冲刺预测
-- Projectile prediction / 飞行物预测
-- Blockable vs. unblockable visual semantics / 可格挡与不可格挡提示
-- Threat invalidation / 威胁失效
-- Automatic Ring / Pointer cleanup / 自动清理提示
+- Multi-enemy mixed combat / 多怪物混合攻击
+- Real-time projectile prediction / 投射物实时预测
+- Real-time projectile tracking / 飞行物实时追踪
+- Boss attack compatibility / Boss 攻击适配
+- Unblockable attack warnings / 不可格挡攻击警告
+- Dynamic charge attack prediction / 动态冲刺攻击预测
 
 ### Installation Video / 安装视频
 
 ▶ **[PerfectBlockTrainer Complete Installation Guide](https://www.bilibili.com/video/BV1ws4R6fEYL/)**
 
-The installation video was originally recorded for an earlier V7 release, but the core installation flow remains applicable to V7.0.5 when using **UE4SS_Grounded2 1.0.4**.
+The installation video was originally recorded for an earlier V7 release, but the core installation flow remains applicable to V7.0.6 when using **UE4SS_Grounded2 1.0.4**.
 
 Installation flow:
 
@@ -194,6 +199,7 @@ The timing UI uses:
 
 - **White ring** — timing cycle
 - **Green arc** — recommended Perfect Block timing window
+- **GOLD overlap** — overlap between two independent green Perfect Block windows
 - **Red pointer** — current timing position
 - **Multiple rings** — upcoming multi-hit threats
 
@@ -251,37 +257,47 @@ If an attack becomes invalid, misses, changes target, or enters a phase that sho
 
 ---
 
-## V7.0.5 Release Testing / V7.0.5 发布测试
+## V7.0.6 Release Testing / V7.0.6 发布测试
 
-Before release, V7.0.5 was tested again with the same package layout used by players.
+Before release, V7.0.6 completed final public-runtime acceptance and a player-style clean-install test using the formal release package.
 
-Tested scenarios include:
+Validated release scenarios include:
 
-- Mixed Wasp + Mosquito combat — **PASS**
-- Normal melee attacks — **PASS**
-- Charge / movement attacks — **PASS**
-- Projectile attacks — **PASS**
-- Multiple overlapping threats — **PASS**
-- QTE cleanup after attacks end — **PASS**
-- Fresh-install release test — **PASS**
-- General performance check — **PASS**
-- Crash during accepted final release testing — **NO**
+- Lizard boss representative attack routes — **PASS**
+- Lizard `Bite_01` double-contact behavior — **PASS**
+- Lizard Combo3 follow-up timing — **PASS**
+- ToeBiter family / validated OGRE and Leviathan routes — **PASS**
+- AXL representative attack routes — **PASS**
+- TayzT / RuzT / SphereBot combo third hit — **PASS**
+- Cockroach Queen Headless Spray — **PASS**
+- Berserker General Headless Spray — **PASS**
+- GOLD overlap QTE presentation — **PASS**
+- Multi-threat QTE / UI smoke test — **PASS**
+- Final release clean-install game test — **PASS**
+- Independent release audit — **PASS**
+- Fatal error during accepted final release testing — **NO**
 
-The final release test did not record a missed, stuck, flickering, premature-cancel, or false-positive QTE problem.
+The public DLL was also checked for development-only exposure before release.
 
-> V7.0.5 在发布前使用与玩家下载包相同的文件结构重新进行了实机测试。  
+> V7.0.6 在发布前完成了正式 Public Runtime 验收，并使用最终 Release 包执行玩家式 clean-install 实机测试。  
 >
-> 黄蜂 + 蚊子混战、普通近战、冲刺 / 位移攻击、射弹攻击、多威胁重叠和攻击结束后的 QTE 清理均通过测试。最终发布测试中没有记录到新的漏提示、卡死、闪烁、过早取消或真误报问题。
+> Lizard Boss、ToeBiter 家族、AXL、TayzT / RuzT / SphereBot 连击第三击、Cockroach Queen / Berserker General 无头喷射、GOLD 重叠显示以及多威胁 QTE / UI 均完成最终验证。最终验收中没有发生 Fatal Error。
+
+### Public Release Hardening / 公开版本硬化
+
+The public DLL is built with the dedicated `PUBLIC_RELEASE_HARDENED` configuration. Development-only diagnostics, runtime probe surfaces, detailed development logging, and development-path exposure are removed while preserving accepted gameplay behavior.
+
+> 公开 DLL 使用独立的 `PUBLIC_RELEASE_HARDENED` 构建配置，移除开发调试、runtime probe、详细开发日志和开发路径等暴露面，同时保持已经验收的 gameplay 行为。
 
 ---
 
 ## Release Package / 发布包
 
-The V7.0.5 package provided to players is the same release package used for the final fresh-install test.
+The V7.0.6 package provided to players is the same release package used for the final clean-install runtime test.
 
 It contains the files required to run PerfectBlockTrainer and does not include development files.
 
-> 玩家下载到的 V7.0.5 与最终全新安装测试使用的是同一个发布包。  
+> 玩家下载到的 V7.0.6 与最终 clean-install 实机测试使用的是同一个发布包。  
 >
 > 发布包只包含运行 PerfectBlockTrainer 所需的文件，不包含开发文件。
 
@@ -317,7 +333,7 @@ The mod predicts and visualizes timing.
 
 ## Requirements / 依赖
 
-PerfectBlockTrainer V7.0.5 requires:
+PerfectBlockTrainer V7.0.6 requires:
 
 1. **Grounded 2**
 2. **UE4SS_Grounded2 1.0.4**
@@ -354,13 +370,13 @@ Installation video:
 Current release package:
 
 ```text
-PerfectBlockTrainer_V7.0.5_RELEASE.zip
+PerfectBlockTrainer_V7.0.6_RELEASE.zip
 ```
 
 Package structure:
 
 ```text
-PerfectBlockTrainer_V7.0.5_RELEASE/
+PerfectBlockTrainer_V7.0.6_RELEASE/
 ├─ Mods/
 │  └─ PerfectBlockTrainerCpp/
 │     └─ dlls/
@@ -401,7 +417,7 @@ Test Ring / Pointer / QTE
 
 ## Clean Installation / 全新安装验证
 
-V7.0.5 was tested using a player-style clean installation.
+V7.0.6 was tested using a player-style clean installation of the final public release package.
 
 The previous PerfectBlockTrainer installation was removed, and the final public `RELEASE.zip` was installed without using development build artifacts.
 
@@ -472,51 +488,27 @@ Different attacks from the same creature are useful to report separately.
 
 Only packages distributed through the official PerfectBlockTrainer channels should be considered official builds.
 
-### PerfectBlockTrainer V7.0.5 Release ZIP
+### PerfectBlockTrainer V7.0.6 Release ZIP
 
 ```text
-PerfectBlockTrainer_V7.0.5_RELEASE.zip
+PerfectBlockTrainer_V7.0.6_RELEASE.zip
 
 SHA256
-192E2BFA7E34C220616FF24D0FB5179CEFEFA2E77B8B11AE425DBD1E049E7C33
+89363449D86CA6A92905BD681EF1AD48C4C77DB6124FD4AD20C068EC19F5AAD0
 ```
 
-### PerfectBlockTrainer V7.0.5 Runtime DLL
+### PerfectBlockTrainer V7.0.6 Runtime DLL
 
 ```text
 main.dll
 
 SHA256
-50F6B6FAE66C772B772FD04783E4947394D6B86F5CD6D3D80442C7B848300ECD
-
-Size
-514560 bytes
-```
-
-### LogicMods
-
-```text
-PerfectBlockTrainer.pak
-
-SHA256
-D4D2572C2B17CCDD393A7A6826990ED01D518CE22057B9660FF48ECCB562FBE4
-```
-
-```text
-PerfectBlockTrainer.utoc
-
-SHA256
-E724D71A8B113F7DD2B6E0FCF93F035153D6EE3DB0DB0B20E6A98AE440890393
-```
-
-```text
-PerfectBlockTrainer.ucas
-
-SHA256
-4A4925F8FF8E9FC6AEDA041E9B33BBB78A1B1A8EAA10B62230DE9D0DFC144A4D
+6D0316BEAD101BC8BC35981356022236A10AE7489215B2DD91C065579BEE241D
 ```
 
 Modified or redistributed builds with different identities should be treated as **unofficial builds**.
+
+The release ZIP SHA256 is the package-level identity. The release package also contains `RELEASE_MANIFEST_SHA256.tsv` for its packaged file manifest.
 
 See [`SHA256SUMS.txt`](SHA256SUMS.txt) for the public release hash list.
 
@@ -562,7 +554,7 @@ Grounded 2 is developed by **Obsidian Entertainment** and published by **Xbox Ga
 
 ## Version
 
-**V7.0.5 — Combat Targeting & QTE Stability Improvements**
+**V7.0.6 — Expanded Combat Coverage & Boss Timing Improvements**
 
 Current public runtime:
 
@@ -575,6 +567,7 @@ Current release channel:
 Previous public releases:
 
 ```text
+V7.0.5 — Combat Targeting & QTE Stability Improvements
 V7.0.4 — Combat Reliability & Mixed-Threat Improvements
 V7.0.3 — Semantic Prediction & Coverage Expansion
 V7.0.2 — Performance Fix

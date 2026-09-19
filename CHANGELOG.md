@@ -1,5 +1,61 @@
 # PerfectBlockTrainer Changelog
 
+## V7.0.6 — Expanded Combat Coverage & Boss Timing Improvements
+
+### Added
+
+- Expanded validated QTE coverage for additional complex enemies, bosses, and special variants.
+- Added broader validated support for the ToeBiter family, including key OGRE / Leviathan variant attacks.
+- Added validated AXL attack coverage for the main tested combat routes.
+- Added and validated missing combo coverage for TayzT / RuzT / SphereBot, including the third combo hit.
+- Added **GOLD overlap visualization** when the green Perfect Block windows of two independent blockable threats overlap.
+
+### Improved
+
+- Improved Lizard boss QTE admission, presentation, and contact timing across multiple attacks.
+- Improved `Bite_01` double-contact handling so a correct first Perfect Block is not incorrectly contradicted by a later physical contact.
+- Improved later-hit timing for Lizard Combo3 sequences.
+- Improved long-range boss attack handling so QTE visibility is based on attack semantics and contact authority rather than a simple boss-root distance check.
+- Improved attack commitment and cancellation handling to reduce both premature prompts and prompts that appear too late to react to.
+- Preserved player reaction time while filtering short-lived or cancelled attack states.
+- Increased GOLD overlap contrast to improve readability during multi-threat combat.
+
+### Fixed
+
+- Fixed `AM_Cockroach_Attack_Spray_Headless` timing for Cockroach Queen and Berserker General.
+- Corrected the Headless Spray contact timing so the QTE aligns with the validated runtime contact window.
+- Kept the Headless Spray correction scoped to the verified attack/source instead of applying a broad rule to unrelated Cockroach attacks.
+
+### Release Hardening
+
+- Built the public DLL with the dedicated `PUBLIC_RELEASE_HARDENED` configuration.
+- Removed development-only diagnostics, runtime probes, detailed development logging, and development-path exposure from the public build.
+- Preserved the accepted gameplay behavior while reducing public development observability.
+
+### Validated
+
+- Lizard boss representative attack routes — **PASS**
+- Lizard `Bite_01` double-contact behavior — **PASS**
+- Lizard Combo3 follow-up timing — **PASS**
+- ToeBiter family / validated OGRE and Leviathan routes — **PASS**
+- AXL representative attack routes — **PASS**
+- TayzT / RuzT / SphereBot combo third hit — **PASS**
+- Cockroach Queen Headless Spray — **PASS**
+- Berserker General Headless Spray — **PASS**
+- GOLD overlap QTE presentation — **PASS**
+- Complex / overlapping threat presentation — **PASS**
+- Fresh public runtime acceptance — **PASS**
+- Final release clean-install runtime test — **PASS**
+- QTE / UI runtime smoke test — **PASS**
+- Fatal error during accepted final release testing — **NO**
+
+### Compatibility
+
+- Grounded 2
+- UE4SS_Grounded2 1.0.4
+
+---
+
 ## V7.0.5 — Combat Targeting & QTE Stability Improvements
 
 ### Improved
