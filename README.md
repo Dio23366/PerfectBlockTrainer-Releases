@@ -18,7 +18,7 @@
   &nbsp;•&nbsp;
   <a href="https://www.nexusmods.com/grounded2/mods/198"><b>Nexus Mods</b></a>
   &nbsp;•&nbsp;
-  <a href="https://www.bilibili.com/video/BV1wh8R6iESi/"><b>Gameplay Demo</b></a>
+  <a href="https://youtu.be/ae4_FEjTbQI"><b>Gameplay Demo</b></a>
   &nbsp;•&nbsp;
   <a href="INSTALL.md"><b>Installation Guide</b></a>
 </p>
