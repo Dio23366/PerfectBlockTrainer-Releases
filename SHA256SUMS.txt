@@ -1,8 +1,8 @@
-# PerfectBlockTrainer V7.0.6 — Official Public Release Hashes
+# PerfectBlockTrainer V7.0.7 — Official Public Release Hashes
 # SHA256  FILE
 
-89363449D86CA6A92905BD681EF1AD48C4C77DB6124FD4AD20C068EC19F5AAD0  PerfectBlockTrainer_V7.0.6_RELEASE.zip
-6D0316BEAD101BC8BC35981356022236A10AE7489215B2DD91C065579BEE241D  Mods/PerfectBlockTrainerCpp/dlls/main.dll
+1822BFF8A389EBD14BF11AAD287710FE96C68383AFC9FEA0291AA6A981E8A4E9  PerfectBlockTrainer_V7.0.7_RELEASE.zip
+64236917A2B0805321EA50DCA6167177FB039ECBE57FC0764E15B08E58215D95  Mods/PerfectBlockTrainerCpp/dlls/main.dll
 #
 # Official public repository:
 # https://github.com/Dio23366/PerfectBlockTrainer-Releases

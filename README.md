@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="media/cover.png" alt="PerfectBlockTrainer V7.0.6" width="100%">
+  <img src="media/cover.png" alt="PerfectBlockTrainer" width="100%">
 </p>
 
-<h1 align="center">PerfectBlockTrainer V7.0.6</h1>
+<h1 align="center">PerfectBlockTrainer</h1>
 
 <p align="center">
   <b>Real-time Combat Training & Threat Decision System for Grounded 2</b>
@@ -48,14 +48,14 @@ PerfectBlockTrainer 从一个真实玩家问题出发：复杂战斗中的完美
 
 ### Public release & usage / 公开发布与使用情况
 
-- **Stable Public Release:** V7.0.6
-- **435 Unique Downloads** on Nexus Mods
-- **645 Total Downloads** on Nexus Mods
-- **2,897 Nexus Views**
+- **Stable Public Release:** V7.0.7
+- **441 Unique Downloads** on Nexus Mods
+- **657 Total Downloads** on Nexus Mods
+- **2,971 Nexus Views**
 - **7 Endorsements**
-- **8,138+ views** on the long-term Bilibili gameplay demo
-- **6 public iteration rounds** after the initial V7.0 release
-- Real-user feedback covering performance, compatibility, installation, attack coverage, and UX
+- **10,000+ cumulative views** across public Bilibili videos
+- **7 public iteration rounds** after the initial V7.0 release
+- Real-user feedback covering performance, compatibility, installation, attack coverage, multiplayer behavior, and UX
 
 > Nexus download and view counts reflect public distribution and discovery activity. They are not treated as DAU, retention, or active-user metrics.
 >
@@ -65,83 +65,83 @@ PerfectBlockTrainer 从一个真实玩家问题出发：复杂战斗中的完美
 
 ## Runtime Decision Flow / 实时决策流程
 
-The product is not a fixed sequence of steps. During combat, the system repeatedly decides whether an observed attack is relevant, whether it is still valid, which threat matters most, and whether the player should see a cue now.
+This diagram intentionally shows the **production runtime path** only. Development probes, release hardening, and later validation evidence are not expanded into the main architecture, because they belong to engineering verification rather than the player-facing runtime decision chain.
 
-> 这不是“事件进来以后一路执行到底”的线性 Workflow。系统会持续重新判断：这个攻击候选是否真的与玩家有关、是否仍然有效、多个有效威胁谁更优先，以及当前到底要不要显示。
+> 这张图只描述 **PBT 正式运行时的核心决策路径**。开发 Probe、发布硬化和后续验证证据不会展开进主架构图，因为它们属于工程验证，而不是玩家实际看到的 Runtime 主链路。
 
 ```mermaid
 flowchart TD
     A["Game Runtime Signals<br/>游戏运行时信号<br/>攻击 / 目标 / 位置 / 投射物"] --> B["Capture Runtime Facts<br/>获取运行时事实<br/>先记录发生了什么"]
-    B --> C["Identify Current Attack<br/>识别当前攻击<br/>哪次攻击？哪一段？<br/>目标是谁？"]
-    C --> D["Choose Prediction Method<br/>选择预测方式<br/>近战 / 冲刺 / 直线投射物 /<br/>弹道投射物"]
+    B --> C["Identify Current Attack<br/>识别当前攻击<br/>哪次攻击？哪一段？目标是谁？"]
+    C --> D["Choose Prediction Method<br/>选择预测方法<br/>Fixed / Dynamic / Projectile / Charge"]
     D --> E["Predict Contact Timing<br/>预测接触时机<br/>什么时候可能碰到玩家？"]
 
     E --> F{"Is It a Real Threat?<br/>是否真的构成威胁？"}
-    F -- "No / 否" --> F0["Ignore Candidate<br/>忽略候选<br/>不生成提示"]
-    F -- "Yes / 是" --> G["Create or Update Threat<br/>创建或更新威胁"]
+    F -- "No / 否" --> F0["Ignore Candidate<br/>忽略候选，不生成提示"]
+    F -- "Yes / 是" --> G["Create / Update Threat<br/>创建或更新威胁"]
 
     G --> H["Track Current Threat State<br/>跟踪当前威胁状态<br/>处理中断 / 取消 / 切目标 / 过期"]
     H --> I{"Still Valid?<br/>现在仍然有效吗？"}
     I -- "No / 否" --> I0["Remove Threat & Clear Cue<br/>移除威胁并清理提示"]
-    I -- "Yes / 是" --> J["Choose Which Threat<br/>Comes First<br/>决定先处理哪个威胁<br/>多个有效威胁竞争有限 UI"]
+    I -- "Yes / 是" --> J["Choose Which Threat Comes First<br/>决定先处理哪个威胁<br/>多个有效威胁的优先级"]
 
-    J --> K{"Show It Now?<br/>现在应该提示玩家吗？"}
-    K -- "No / 否" --> K0["Keep State<br/>Do Not Show Yet<br/>保留状态，暂不显示"]
-    K0 -. "Re-check as combat changes<br/>战斗变化后重新判断" .-> J
-    K -- "Yes / 是" --> L["Update On-screen Cue<br/>更新屏幕提示<br/>显示 / 更新 / 切换 / 清理"]
-
+    J --> K{"Show It Now?<br/>现在应该展示吗？"}
+    K -- "No / 否" --> K0["Keep State, Do Not Show Yet<br/>保留状态，暂不展示"]
+    K0 -. "Re-check as combat changes / 战斗变化后重新判断" .-> H
+    K -- "Yes / 是" --> L["Update On-screen Cue<br/>更新屏幕提示<br/>Show / Update / Retarget / Clear<br/>FULL / DIM / HIDDEN"]
     L --> M["QTE Cue<br/>玩家可见提示"]
-    M --> N["Player Decision & Input<br/>玩家判断并操作"]
-    N --> O["Validate with Actual<br/>Game Outcome<br/>用实际游戏结果验证<br/>Block / Hit / Miss / Cancel"]
-    O -. "Evidence for later validation<br/>作为后续验证证据" .-> B
 ```
 
-The important part of the flow is not the number of boxes, but the **decisions that can stop, revoke, delay, or redirect the flow**:
+The architecture remains deliberately compact: **observe → identify → choose a prediction path → predict contact → validate the threat → track its lifecycle → resolve priority → decide whether to display it**.
 
-- Capturing runtime facts does not mean the system already knows what attack they represent.
-- Predicting a contact time does not mean the candidate is a real threat to the player.
-- A previously valid threat can become invalid and must be removed.
-- Several valid threats can exist at once, so the system must choose what deserves limited UI attention first.
-- A displayed cue is only information; the player still performs the action.
+V7.0.7 does not replace this architecture. It strengthens several stages inside the same runtime model:
+
+- **Prediction selection and contact timing** now cover more dynamic charge, relative-motion, projectile, FixedContact, and boss-specific cases.
+- **Threat-state tracking** continues to remove stale or invalid cues when attacks are interrupted, cancelled, retargeted, missed, or expired.
+- **Display control** now includes the player-facing `FULL → DIM → HIDDEN → FULL` visibility cycle.
 
 **中文理解**
 
-这张图最重要的不是“步骤很多”，而是系统在不断做取舍：
+V7.0.7 并没有把 PBT 重构成另一套系统，而是在原有架构里继续增强预测、威胁状态和显示控制：
 
-- 先获取游戏正在发生的事实，再判断这些信号到底代表哪次攻击；
-- 即使算出了接触时间，也要再判断它是不是真的会威胁当前玩家；
-- 已经成立的威胁，也可能因为打断、击晕、击杀、切换目标或已经打空而被撤销；
-- 多个威胁同时成立时，需要决定谁应该优先占用有限的 UI 注意力；
-- 最终提示只是帮助玩家理解时机，系统不会替玩家执行格挡。
+- 先从游戏 Runtime 中获取事实；
+- 识别当前到底是哪一次攻击；
+- 根据攻击类型选择合适的预测方法；
+- 预测可能的接触时机；
+- 判断它是否真的构成当前玩家威胁；
+- 持续跟踪攻击是否被打断、取消、切目标或过期；
+- 多个威胁同时成立时决定优先级；
+- 最后再决定是否更新玩家屏幕上的 QTE。
+
+这也是 V7.0.6 到 V7.0.7 的真实演进方式：**核心架构保持稳定，能力在内部逐步增强。**
 
 ---
 
-## Key Concepts in the Flow / 流程中的核心概念
+## Key Runtime Concepts / 核心运行概念
 
-The flowchart uses plain action-oriented names first. The original technical terms are kept in parentheses only where they help deeper implementation discussions.
+The README uses action-oriented names first. The original technical terms are kept in parentheses where they are useful for implementation discussions.
 
-> 为了让第一次接触项目的人直接看懂，流程图优先写“这一层具体做什么”。原来的技术术语只保留在这里，方便后续深入讨论实现。
+> 为了让第一次接触项目的人直接看懂，这里优先使用“这一层具体在做什么”的名称；需要讨论实现时，再保留原来的技术术语作为括号说明。
 
 | What this stage does / 这一层在做什么 | Meaning in PerfectBlockTrainer / 在 PBT 中的实际含义 |
 |---|---|
-| **Capture Runtime Facts / 获取运行时事实** *(Runtime Observation)* | Read raw facts from the running game：攻击事件、来源与目标、位置、速度、投射物状态、格挡/命中/Miss 等。这里只回答“发生了什么”，暂不解释这些信号代表哪次攻击。 |
-| **Identify Current Attack / 识别当前攻击** *(Semantic Reconstruction)* | Turn raw callbacks into an understandable attack identity：判断这是哪个敌人、哪一次攻击、哪一段连击、是否可格挡、当前目标是谁。 |
-| **Choose Prediction Method / 选择预测方式** *(Collision Topology / Routing)* | Different physical attack types need different prediction methods：固定接触、移动本体/冲刺、直线投射物、弹道投射物分别进入合适的预测路径。 |
+| **Capture Runtime Facts / 获取运行时事实** *(Runtime Observation)* | Record raw facts from the running game：攻击事件、来源与目标、位置、速度、投射物状态等。这里只回答“发生了什么”，暂不解释它意味着什么。 |
+| **Identify Current Attack / 识别当前攻击** *(Semantic Reconstruction)* | Turn raw callbacks into an understandable attack identity：判断这是哪一个敌人、哪一次攻击、哪一段连击、是否可格挡、当前目标是谁。 |
+| **Choose Prediction Method / 选择预测方法** *(Collision Topology / Routing)* | Different physical attack types need different prediction methods：固定接触、移动本体/冲刺、直线投射物、弹道投射物分别进入合适的预测路径。 |
 | **Predict Contact Timing / 预测接触时机** *(Prediction)* | Estimate when a candidate attack may contact the player：根据对应的运动/攻击模型估计可能接触时间，并允许运行时持续修正。 |
-| **Is It a Real Threat? / 是否真的构成威胁？** *(Threat Admission)* | Check whether a mathematically predictable attack is actually relevant to the current player：确认攻击来源、目标关系、攻击状态和物理关系仍然成立，过滤不应该进入后续流程的候选。 |
-| **Track Current Threat State / 跟踪当前威胁状态** *(Threat Lifecycle / State Authority)* | Keep the active threat state consistent：处理打断、击晕、击杀、取消、切目标、过期；当旧状态和新状态同时存在时，只允许当前有效状态继续更新威胁。 |
-| **Choose Which Threat Comes First / 决定先处理哪个威胁** *(Multi-threat Arbitration)* | When several threats are valid at once, choose which ones deserve the limited UI slots first：依据接触时间、优先级和稳定性规则决定展示顺序。 |
-| **Update On-screen Cue / 更新屏幕提示** *(Scheduler)* | Turn changing threat state into stable UI behavior：决定什么时候显示、更新、切换、保持或清理提示，避免 UI 因瞬时变化频繁抖动或残留。 |
-| **Validate with Actual Game Outcome / 用实际游戏结果验证** *(Ground Truth)* | Compare system decisions with real combat outcomes：用真实 Perfect Block、普通格挡、命中、Miss、取消等结果检查判断，并作为后续回归证据。 |
+| **Is It a Real Threat? / 是否真的构成威胁** *(Threat Admission)* | Decide whether a prediction is actually relevant to the current player：即使能算出时间，也要确认攻击来源、目标关系、攻击状态和物理关系仍然成立。 |
+| **Track Current Threat State / 跟踪当前威胁状态** *(Lifecycle / Authority)* | Keep only current, legitimate threat state：处理打断、击晕、击杀、取消、切目标、Miss、过期，并防止旧状态重新覆盖已经更新的威胁。 |
+| **Choose Which Threat Comes First / 决定先处理哪个威胁** *(Arbitration)* | When several threats are valid at once, decide which ones deserve limited UI attention first：依据接触时间、优先级和稳定性规则选择展示顺序。 |
+| **Update On-screen Cue / 更新屏幕提示** *(Scheduler / Display Control)* | Turn changing threat state into stable UI actions：决定什么时候显示、更新、切换、保持或清除提示，并在 V7.0.7 中支持 `FULL / DIM / HIDDEN` 显示状态。 |
 
 Current production prediction families include:
 
 ```text
-FIXED_SINGLE         — fixed single-hit timing / 固定单段攻击
-FIXED_MULTI          — fixed multi-hit timing / 固定多段攻击
-MOVING_BODY          — charge / moving attacker / 冲刺或移动本体攻击
-LINEAR_PROJECTILE    — straight-line projectile / 直线投射物
-BALLISTIC_PROJECTILE — arcing projectile / 弹道投射物
+FIXED_SINGLE        — fixed single-hit timing / 固定单段攻击
+FIXED_MULTI         — fixed multi-hit timing / 固定多段攻击
+MOVING_BODY         — charge / moving attacker / 冲刺或移动本体攻击
+LINEAR_PROJECTILE   — straight-line projectile / 直线投射物
+BALLISTIC_PROJECTILE— arcing projectile / 弹道投射物
 ```
 
 ---
@@ -155,7 +155,7 @@ The project scope includes:
 - Player problem discovery and product boundary definition
 - Runtime decision-system architecture and interaction design
 - AI-assisted implementation and iterative technical validation
-- Runtime fact capture, attack identification, state transitions, and threat-state tracking
+- Runtime event capture, attack-meaning reconstruction, state transitions, and threat-validity tracking
 - Release prioritization across compatibility, performance, attack coverage, reliability, and UX
 - Real-user issue reproduction, root-cause analysis, and regression validation
 - Runtime validation, release hardening, clean-install acceptance, and public packaging
@@ -206,7 +206,7 @@ Therefore the system reconstructs the attack meaning using information such as:
 
 游戏告诉系统“发生了一个事件”，不代表系统已经知道“这是哪一次攻击、哪一段连击、是否可格挡、属于哪个目标关系”。
 
-因此系统先记录“发生了什么”，再通过 **Identify Current Attack / 识别当前攻击** 判断“这是哪次攻击、哪一段、是否可格挡、当前目标是谁”。
+因此系统先记录“发生了什么”，再通过 **Attack Meaning Reconstruction / 攻击含义还原** 判断“这是哪次攻击、哪一段、是否可格挡、当前目标是谁”。
 
 ---
 
@@ -229,9 +229,9 @@ The attack may later be:
 
 例如怪物已经发动攻击，但随后被打断、击晕、击杀，或者已经切换目标，那么原来的 QTE 就不能继续残留。
 
-这就是 **Track Current Threat State / 跟踪当前威胁状态**（技术上对应 Threat Lifecycle）存在的原因：系统持续判断威胁从创建、更新到失效、过期和清除的状态变化。
+这就是 **Threat Validity Tracking / 威胁有效性跟踪**（技术上对应 Threat Lifecycle）存在的原因：系统持续判断威胁从创建、更新到失效、过期和清除的状态变化。
 
-**Control Which State May Update / 控制哪个状态还能更新**（技术上对应 State Authority）解决另一类问题：旧攻击、旧预测、新目标和新的 Runtime Event 可能同时存在，系统必须明确“哪个状态现在还能更新这个威胁”，避免已经失效的旧状态重新覆盖新状态。
+**State Update Ownership / 状态更新权**（技术上对应 Authority）解决另一类问题：旧攻击、旧预测、新目标和新的 Runtime Event 可能同时存在，系统必须明确“哪个状态现在还能更新这个威胁”，避免已经失效的旧状态重新覆盖新状态。
 
 ---
 
@@ -245,7 +245,7 @@ A contact time can be mathematically predicted while the candidate is still not 
 
 “数学上能算出什么时候会碰到玩家”不代表这个候选攻击就应该进入正式 Threat 系统。
 
-例如攻击来源已经失效、目标已经切换，或者当前攻击实例/物理关系已经不再成立，系统仍可能数学上算出一个时间值。因此 **Is It a Real Threat? / 是否真的构成威胁？**（技术上对应 Threat Admission）会再确认：这个预测现在是否真的与玩家有关，只有通过后才进入后续流程。
+例如攻击来源已经失效、目标已经切换，或者当前攻击实例/物理关系已经不再成立，系统仍可能数学上算出一个时间值。因此 **Valid Threat Check / 有效威胁判定**（技术上对应 Threat Admission）会再确认：这个预测现在是否真的与玩家有关，只有通过后才进入后续流程。
 
 ---
 
@@ -259,7 +259,7 @@ Multiple valid threats can exist at the same time while player attention and vis
 
 多个 Threat 可以同时全部“合法”，但玩家注意力和 UI 槽位是有限的。
 
-因此 **Choose Which Threat Comes First / 决定先处理哪个威胁**（技术上对应 Multi-threat Arbitration）先决定多个有效威胁中谁更应该占用有限 UI；随后 **Update On-screen Cue / 更新屏幕提示**（技术上对应 Scheduler）把持续变化的状态转换成稳定的显示、更新、切换和清理行为，避免 UI 因瞬时变化频繁抖动或残留。
+因此 **Multiple-Threat Priority Selection / 多威胁优先级选择**（技术上对应 Arbitration）先决定多个有效威胁中谁更应该占用有限 UI；随后 **Display Update Control / 提示显示与更新控制**（技术上对应 Scheduler）把持续变化的状态转换成稳定的显示、更新、切换和清理行为，避免 UI 因瞬时变化频繁抖动或残留。
 
 ---
 
@@ -362,6 +362,10 @@ Target switching / stale-state cleanup / mixed-combat stability
 V7.0.6
 Boss & variant coverage / readability / release hardening
 Boss 与变体覆盖、可读性、发布硬化
+↓
+V7.0.7
+Roster coverage / second-layer dynamic prediction / QTE visibility control
+生物覆盖、二层动态预测与 QTE 显示控制
 ```
 
 Release priorities evolved roughly as:
@@ -375,13 +379,13 @@ Availability / 可用
 → Release Quality / 发布质量
 ```
 
-Later releases therefore focus less on simply adding features and more on stable behavior, failure boundaries, regression safety, and release confidence.
+V7.0.7 represents a later product stage: the core system is already stable enough that development can expand coverage, improve dynamic prediction, and add user-facing display controls without abandoning the established reliability and release gates.
 
 **中文说明**
 
 版本优先级不是固定的。早期首先解决“能不能正常使用”，随后才逐渐转向正确性、复杂场景稳定性、覆盖、UX 和 Release Quality。
 
-因此后期版本增加功能的同时，也会更严格地考虑 Failure Boundary、Regression Risk 和发布可信度，而不是单纯追求支持更多攻击。
+到了 V7.0.7，开发重点已经从单纯修复基础可用性，进一步转向当前生物覆盖、复杂动态攻击预测以及玩家可控的 QTE 显示体验，同时继续保持已有的回归与发布质量要求。
 
 Detailed per-version feature changes and player-facing patch information are maintained through **Nexus Mods** and **GitHub Releases** rather than duplicated here.
 
@@ -389,27 +393,28 @@ Detailed per-version feature changes and player-facing patch information are mai
 
 ## Reliability & Release Engineering / 可靠性与发布
 
-V7.0.6 completed a dedicated public-runtime acceptance process before release.
+V7.0.7 completed a dedicated public-runtime and distribution-level acceptance process before release.
 
 Representative accepted scenarios include:
 
-- Lizard boss representative attack routes — **PASS**
-- Lizard `Bite_01` double-contact behavior — **PASS**
-- Lizard Combo3 follow-up timing — **PASS**
-- ToeBiter family / validated OGRE and Leviathan routes — **PASS**
-- AXL representative attack routes — **PASS**
-- TayzT / RuzT / SphereBot combo third hit — **PASS**
-- Cockroach Queen Headless Spray — **PASS**
-- Berserker General Headless Spray — **PASS**
-- GOLD overlap QTE presentation — **PASS**
-- Multi-threat QTE / UI smoke test — **PASS**
-- Final release clean-install game test — **PASS**
-- Independent release audit — **PASS**
+- Garden Masked Fighter / Mysterious Stranger attack coverage — **PASS**
+- O.R.C. Broodmother representative attacks — **PASS**
+- O.R.C. Broodmother Slow 5-Combo — **PASS**
+- O.R.C. Broodmother Fast 5-Combo — **PASS**
+- O.R.C. Broodmother Fast 3-Combo — **PASS**
+- Dynamic charge / moving-body prediction — **PASS**
+- Representative projectile and relative-motion prediction — **PASS**
+- F8 QTE visibility cycling: `FULL → DIM → HIDDEN → FULL` — **PASS**
+- Release-package clean-install game test — **PASS**
+- Fresh public runtime smoke test — **PASS**
+- Runtime restored after release validation — **PASS**
 - Fatal error during accepted final release testing — **NO**
+
+The current release also completed the intended QTE adaptation pass for the known creature roster in the tested Grounded 2 version. This does **not** mean every animation should produce a blockable QTE: `NO_CUE`, attacks that are not handled as ordinary Perfect Block attacks, and explicitly deferred special cases remain intentional exceptions.
 
 **中文说明**
 
-这里的“发布完成”不是只指代码编译成功。最终 Public Release 需要通过代表性攻击路线、多威胁 UI、clean-install 和独立 Release Audit，确认最终分发包本身能够正常运行。
+V7.0.7 的“覆盖完成”指当前已知生物范围内的 QTE 适配主线已经完成，并通过代表性实战验证；它不表示游戏中的每一个动画都必须显示可格挡 QTE。`NO_CUE`、非普通格挡攻击以及明确延期处理的特殊攻击仍属于设计例外。
 
 ### Public Release Hardening / 公开版本硬化
 
@@ -472,26 +477,29 @@ PerfectBlockTrainer currently supports multiple production prediction and presen
 - Blockable / unblockable attack classification / 可格挡与不可格挡攻击分类
 - Multi-phase attack handling / 多阶段攻击
 - Runtime prediction correction / 运行时预测修正
+- **Second-layer dynamic prediction for relative movement / 基于相对运动的二层动态预测**
 - Threat target update / 威胁目标变化后的更新
 - Automatic cleanup when attacks stop being valid threats / 攻击不再构成威胁时自动清理提示
 - Chronological handling of upcoming multi-hit threats / 多段威胁按接触顺序处理
 - Save / map transition cleanup / 存档与地图切换时的状态清理
 - QTE Ring / Pointer cleanup / QTE Ring 与 Pointer 清理
+- **QTE visibility control: `FULL → DIM → HIDDEN → FULL` / QTE 显示状态切换**
 
 Representative current production coverage includes:
 
 - Multi-enemy and mixed-threat combat
 - Mixed melee and ranged combat
 - Multi-hit and special attack sequences
+- Garden Masked Fighter / Mysterious Stranger boss attacks
+- O.R.C. Broodmother multi-phase combo attacks
 - Lizard boss representative attack routes
 - ToeBiter family validated routes, including key OGRE / Leviathan variants
 - AXL representative attack routes
 - TayzT / RuzT / SphereBot combo coverage
 - Cockroach Queen / Berserker General Headless Spray timing
-- Mysterious Stranger boss attacks
 - Black Ant direct-contact projectiles
 - Earwig RockThrow during mixed combat
-- Moving-body / charge attacks
+- Representative dynamic prediction cases involving Mosquito, Blue Butterfly, Bee, Wasp, Ladybug, and rolling / charge-style enemies
 - Multiple simultaneous threats
 - Blockable / unblockable warning behavior
 
@@ -514,6 +522,14 @@ Red does **not** mean "hard attack" or "high damage". It specifically means **th
 
 The GOLD overlap is a readability feature only. It does not change attack timing, Perfect Block window size, or Grounded 2 combat rules.
 
+V7.0.7 also adds player-controlled QTE visibility modes through **F8**:
+
+```text
+FULL → DIM → HIDDEN → FULL
+```
+
+This changes presentation only. Prediction and combat-state tracking continue to run while the UI is dimmed or hidden.
+
 ---
 
 ## Demo / 演示
@@ -522,28 +538,28 @@ The GOLD overlap is a readability feature only. It does not change attack timing
 
 ▶ **[Watch the PerfectBlockTrainer Gameplay Demo on Bilibili](https://www.bilibili.com/video/BV1wh8R6iESi/)**
 
-Current public demo signal: **8,138+ views**.
-
-The long-term gameplay demo focuses on:
+The long-term gameplay demo is maintained as the product evolves. Current showcase topics include:
 
 - Multi-enemy mixed combat
-- Real-time projectile prediction
 - Real-time projectile tracking
+- Dynamic projectile contact prediction
 - Boss attack compatibility
 - Unblockable attack warnings
 - Dynamic charge attack prediction
+- Multi-threat QTE readability
+- QTE visibility control: `FULL · DIM · HIDDEN`
 
 ### Installation Video / 安装视频
 
 ▶ **[PerfectBlockTrainer Complete Installation Guide](https://www.bilibili.com/video/BV1ws4R6fEYL/)**
 
-The installation video was originally recorded for an earlier V7 release, but the core installation flow remains applicable to V7.0.6 when using **UE4SS_Grounded2 1.0.4**.
+The installation video was originally recorded for an earlier V7 release, but the core installation flow remains applicable to V7.0.7 when using **UE4SS_Grounded2 1.0.4**.
 
 ---
 
 ## Requirements / 依赖
 
-PerfectBlockTrainer V7.0.6 requires:
+PerfectBlockTrainer V7.0.7 requires:
 
 1. **Grounded 2**
 2. **UE4SS_Grounded2 1.0.4**
@@ -576,13 +592,13 @@ Then follow:
 Current release package:
 
 ```text
-PerfectBlockTrainer_V7.0.6_RELEASE.zip
+PerfectBlockTrainer_V7.0.7_RELEASE.zip
 ```
 
 Package structure:
 
 ```text
-PerfectBlockTrainer_V7.0.6_RELEASE/
+PerfectBlockTrainer_V7.0.7_RELEASE/
 ├─ Mods/
 │  └─ PerfectBlockTrainerCpp/
 │     └─ dlls/
@@ -623,22 +639,25 @@ Test Ring / Pointer / QTE
 
 ## Known Limitations / 当前限制
 
-PerfectBlockTrainer does not claim complete validation of every creature and every attack in Grounded 2.
+V7.0.7 completed the current known-creature QTE adaptation pass for the tested Grounded 2 version, but the product still keeps explicit behavior boundaries.
 
 Current limitations include:
 
-- Some uncommon or special attack patterns may still require dedicated runtime validation
-- Some projectile or unusual physical attack types may not yet have a validated production prediction path
-- Different attacks from the same enemy can behave differently
-- Multiplayer validation has primarily focused on the **host-side** scenario
+- `NO_CUE` attacks intentionally do not produce a normal Perfect Block prompt
+- Attacks that are not treated as ordinary blockable attacks may use warning behavior or no QTE
+- Explicitly deferred special attacks may still require dedicated runtime validation
+- Different attacks from the same enemy can use different prediction paths and semantics
+- Multiplayer validation remains primarily **host-side**; full guest/client QTE support is not yet implemented
 - Future Grounded 2 updates may change runtime behavior or hooks and may require compatibility fixes
 - PerfectBlockTrainer is a training / visualization product and does not change the game's actual Perfect Block rules
 
 **中文说明**
 
-项目不会把“已支持一部分代表性攻击”描述成“已经验证游戏里的所有敌人与所有攻击”。对于特殊攻击、特殊物理运动方式和未来游戏版本变化，仍可能需要单独 Runtime Validation。
+V7.0.7 已完成当前测试版本已知生物范围内的 QTE 适配主线，但这不等于“每一个动画都应该出现绿色 QTE”。
 
-If an attack produces no QTE, incorrect timing, or the wrong semantic warning, please report the specific enemy and attack.
+`NO_CUE`、非普通格挡攻击、明确延期处理的特殊攻击，以及尚未完成的多人客机 QTE，都属于当前明确的产品边界。
+
+If an attack produces no QTE where one is expected, incorrect timing, or the wrong semantic warning, please report the specific enemy and attack.
 
 ---
 
@@ -686,22 +705,22 @@ Different attacks from the same creature are useful to report separately.
 
 Only packages distributed through the official PerfectBlockTrainer channels should be considered official builds.
 
-### PerfectBlockTrainer V7.0.6 Release ZIP
+### PerfectBlockTrainer V7.0.7 Release ZIP
 
 ```text
-PerfectBlockTrainer_V7.0.6_RELEASE.zip
+PerfectBlockTrainer_V7.0.7_RELEASE.zip
 
 SHA256
-89363449D86CA6A92905BD681EF1AD48C4C77DB6124FD4AD20C068EC19F5AAD0
+1822BFF8A389EBD14BF11AAD287710FE96C68383AFC9FEA0291AA6A981E8A4E9
 ```
 
-### PerfectBlockTrainer V7.0.6 Runtime DLL
+### PerfectBlockTrainer V7.0.7 Runtime DLL
 
 ```text
 main.dll
 
 SHA256
-6D0316BEAD101BC8BC35981356022236A10AE7489215B2DD91C065579BEE241D
+64236917A2B0805321EA50DCA6167177FB039ECBE57FC0764E15B08E58215D95
 ```
 
 Modified or redistributed builds with different identities should be treated as **unofficial builds**.
@@ -764,7 +783,7 @@ Grounded 2 is developed by **Obsidian Entertainment** and published by **Xbox Ga
 
 ## Version / 当前版本
 
-**V7.0.6 — Stable Public Release**
+**V7.0.7 — Stable Public Release**
 
 Current public runtime:
 
@@ -773,6 +792,7 @@ Current public runtime:
 Previous public releases:
 
 ```text
+V7.0.6 — Expanded Combat Coverage & Boss Timing Improvements
 V7.0.5 — Combat Targeting & QTE Stability Improvements
 V7.0.4 — Combat Reliability & Mixed-Threat Improvements
 V7.0.3 — Semantic Prediction & Coverage Expansion

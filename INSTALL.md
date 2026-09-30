@@ -1,4 +1,4 @@
-# PerfectBlockTrainer V7.0.6
+# PerfectBlockTrainer V7.0.7
 
 **Installation Guide / 安装指南**
 
@@ -12,7 +12,7 @@ You need:
 
 1. **Grounded 2**
 2. **UE4SS_Grounded2 1.0.4**
-3. **PerfectBlockTrainer V7.0.6**
+3. **PerfectBlockTrainer V7.0.7**
 
 ## 2. Find the Grounded 2 Installation Folder
 
@@ -76,7 +76,7 @@ Then completely exit the game.
 Extract:
 
 ```text
-PerfectBlockTrainer_V7.0.6_RELEASE.zip
+PerfectBlockTrainer_V7.0.7_RELEASE.zip
 ```
 
 Open:
@@ -238,6 +238,20 @@ UI disappears after the attack ends
 
 If this works, installation is complete.
 
+### QTE Visibility Hotkey
+
+V7.0.7 adds an F8 display-mode switch:
+
+```text
+FULL → DIM → HIDDEN → FULL
+```
+
+- `FULL` — normal QTE display
+- `DIM` — reduced QTE visibility
+- `HIDDEN` — QTE UI hidden
+
+This changes presentation only. Prediction and threat tracking continue to run while the UI is dimmed or hidden.
+
 ## 9. Troubleshooting
 
 ### Game Does Not Start
@@ -298,11 +312,11 @@ Correct:
 
 Completely exit **Grounded 2** before updating.
 
-### Updating from V7.0.5
+### Updating from V7.0.6
 
-V7.0.6 expands validated enemy / boss coverage, improves several complex attack timings, and adds GOLD overlap visualization for overlapping blockable QTE windows.
+V7.0.7 expands the current creature / boss QTE adaptation coverage, improves second-layer dynamic prediction for moving threats, adds Garden Masked Fighter and O.R.C. Broodmother coverage, and adds F8 QTE visibility control.
 
-For the safest update, replace the current PerfectBlockTrainer files with the files from the V7.0.6 release package.
+For the safest update, replace the current PerfectBlockTrainer files with the files from the V7.0.7 release package.
 
 Replace the old:
 
@@ -310,7 +324,7 @@ Replace the old:
 Grounded2\Augusta\Binaries\Win64\ue4ss\Mods\PerfectBlockTrainerCpp
 ```
 
-with the V7.0.6 `PerfectBlockTrainerCpp` folder.
+with the V7.0.7 `PerfectBlockTrainerCpp` folder.
 
 Then replace all three PerfectBlockTrainer LogicMods files in:
 
@@ -318,7 +332,7 @@ Then replace all three PerfectBlockTrainer LogicMods files in:
 Grounded2\Augusta\Content\Paks\LogicMods
 ```
 
-with the files from the V7.0.6 release package:
+with the files from the V7.0.7 release package:
 
 ```text
 PerfectBlockTrainer.pak
@@ -334,11 +348,11 @@ BPModLoaderMod : 1
 PerfectBlockTrainerCpp : 1
 ```
 
-### Updating from V7.0.4 or Earlier Public Releases
+### Updating from V7.0.5 or Earlier Public Releases
 
 A full PerfectBlockTrainer file replacement is recommended.
 
-Replace the old `PerfectBlockTrainerCpp` folder with the V7.0.6 version and replace all three PerfectBlockTrainer LogicMods files together.
+Replace the old `PerfectBlockTrainerCpp` folder with the V7.0.7 version and replace all three PerfectBlockTrainer LogicMods files together.
 
 Do not mix LogicMods files from different release packages.
 
@@ -368,7 +382,7 @@ Grounded2\Augusta\Content\Paks\LogicMods\PerfectBlockTrainer.ucas
 Grounded2\Augusta\Content\Paks\LogicMods\PerfectBlockTrainer.utoc
 ```
 
-Then install V7.0.6 again using Sections 5–7 above.
+Then install V7.0.7 again using Sections 5–7 above.
 
 ## 11. Uninstall
 
@@ -392,18 +406,18 @@ Then remove or disable the `PerfectBlockTrainerCpp` entry in `mods.txt`.
 
 Do not delete files belonging to other mods.
 
-## 12. Official V7.0.6 Release Identity
+## 12. Official V7.0.7 Release Identity
 
 Release package:
 
 ```text
-PerfectBlockTrainer_V7.0.6_RELEASE.zip
+PerfectBlockTrainer_V7.0.7_RELEASE.zip
 ```
 
 SHA256:
 
 ```text
-89363449D86CA6A92905BD681EF1AD48C4C77DB6124FD4AD20C068EC19F5AAD0
+1822BFF8A389EBD14BF11AAD287710FE96C68383AFC9FEA0291AA6A981E8A4E9
 ```
 
 Runtime DLL:
@@ -415,7 +429,7 @@ main.dll
 SHA256:
 
 ```text
-6D0316BEAD101BC8BC35981356022236A10AE7489215B2DD91C065579BEE241D
+64236917A2B0805321EA50DCA6167177FB039ECBE57FC0764E15B08E58215D95
 ```
 
 Only packages distributed through the official PerfectBlockTrainer channels should be considered official builds.
@@ -447,7 +461,7 @@ Only packages distributed through the official PerfectBlockTrainer channels shou
 
 1. **Grounded 2 / 禁闭求生 2**
 2. **UE4SS_Grounded2 1.0.4**
-3. **PerfectBlockTrainer V7.0.6**
+3. **PerfectBlockTrainer V7.0.7**
 
 ## 2. 找到 Grounded 2 安装目录
 
@@ -511,7 +525,7 @@ Win64
 解压：
 
 ```text
-PerfectBlockTrainer_V7.0.6_RELEASE.zip
+PerfectBlockTrainer_V7.0.7_RELEASE.zip
 ```
 
 打开：
@@ -675,6 +689,21 @@ Pointer 运动
 
 如果这一整套流程正常，说明安装完成。
 
+
+### QTE 显示模式热键
+
+V7.0.7 新增 F8 显示模式切换：
+
+```text
+FULL → DIM → HIDDEN → FULL
+```
+
+- `FULL` — 正常显示 QTE
+- `DIM` — 降低 QTE 可见度
+- `HIDDEN` — 隐藏 QTE UI
+
+该功能只改变显示状态。即使 UI 处于 DIM 或 HIDDEN，攻击预测与威胁状态跟踪仍会继续运行。
+
 ## 9. 常见问题
 
 ### 游戏无法启动
@@ -733,15 +762,15 @@ PerfectBlockTrainerCpp : 1
 ...\Mods\PerfectBlockTrainerCpp\dlls\main.dll
 ```
 
-## 10. 从旧版本更新到 V7.0.6
+## 10. 从旧版本更新到 V7.0.7
 
 更新前请先完全退出 **Grounded 2**。
 
-### 从 V7.0.5 更新
+### 从 V7.0.6 更新
 
-V7.0.6 进一步扩展了经过验证的敌人 / Boss 攻击覆盖，修正多种复杂攻击的 QTE 时序，并加入多个可格挡 QTE 时间窗口重叠时的 GOLD / 金色重叠区域。
+V7.0.7 进一步扩展当前生物 / Boss 的 QTE 适配覆盖，完善动态攻击的二层预测，新增神秘人与 O.R.C. 育母蜘蛛相关适配，并加入 F8 QTE 显示模式切换。
 
-为了避免不同版本文件混用，建议直接使用 V7.0.6 Release 包中的文件完整替换 PerfectBlockTrainer。
+为了避免不同版本文件混用，建议直接使用 V7.0.7 Release 包中的文件完整替换 PerfectBlockTrainer。
 
 把旧的：
 
@@ -749,7 +778,7 @@ V7.0.6 进一步扩展了经过验证的敌人 / Boss 攻击覆盖，修正多�
 Grounded2\Augusta\Binaries\Win64\ue4ss\Mods\PerfectBlockTrainerCpp
 ```
 
-替换成 V7.0.6 的 `PerfectBlockTrainerCpp` 文件夹。
+替换成 V7.0.7 的 `PerfectBlockTrainerCpp` 文件夹。
 
 然后把：
 
@@ -757,7 +786,7 @@ Grounded2\Augusta\Binaries\Win64\ue4ss\Mods\PerfectBlockTrainerCpp
 Grounded2\Augusta\Content\Paks\LogicMods
 ```
 
-中的三个 PerfectBlockTrainer LogicMods 文件全部替换为 V7.0.6 Release 包中的版本：
+中的三个 PerfectBlockTrainer LogicMods 文件全部替换为 V7.0.7 Release 包中的版本：
 
 ```text
 PerfectBlockTrainer.pak
@@ -773,11 +802,11 @@ BPModLoaderMod : 1
 PerfectBlockTrainerCpp : 1
 ```
 
-### 从 V7.0.4 或更早公开版本更新
+### 从 V7.0.5 或更早公开版本更新
 
 建议完整替换 PerfectBlockTrainer 文件。
 
-将旧的 `PerfectBlockTrainerCpp` 文件夹替换为 V7.0.6 版本，并将三个 PerfectBlockTrainer LogicMods 文件一起替换。
+将旧的 `PerfectBlockTrainerCpp` 文件夹替换为 V7.0.7 版本，并将三个 PerfectBlockTrainer LogicMods 文件一起替换。
 
 不要混用不同 Release 包中的 LogicMods 文件。
 
@@ -807,7 +836,7 @@ Grounded2\Augusta\Content\Paks\LogicMods\PerfectBlockTrainer.ucas
 Grounded2\Augusta\Content\Paks\LogicMods\PerfectBlockTrainer.utoc
 ```
 
-然后按照上面的第 5–7 节重新安装 V7.0.6。
+然后按照上面的第 5–7 节重新安装 V7.0.7。
 
 ## 11. 卸载
 
@@ -831,18 +860,18 @@ Grounded2\Augusta\Content\Paks\LogicMods\PerfectBlockTrainer.utoc
 
 不要删除其他 Mod 的文件。
 
-## 12. V7.0.6 官方发行身份
+## 12. V7.0.7 官方发行身份
 
 Release 包：
 
 ```text
-PerfectBlockTrainer_V7.0.6_RELEASE.zip
+PerfectBlockTrainer_V7.0.7_RELEASE.zip
 ```
 
 SHA256：
 
 ```text
-89363449D86CA6A92905BD681EF1AD48C4C77DB6124FD4AD20C068EC19F5AAD0
+1822BFF8A389EBD14BF11AAD287710FE96C68383AFC9FEA0291AA6A981E8A4E9
 ```
 
 运行时 DLL：
@@ -854,7 +883,7 @@ main.dll
 SHA256：
 
 ```text
-6D0316BEAD101BC8BC35981356022236A10AE7489215B2DD91C065579BEE241D
+64236917A2B0805321EA50DCA6167177FB039ECBE57FC0764E15B08E58215D95
 ```
 
 只有从 PerfectBlockTrainer 官方发布渠道获取的包应被视为官方版本。

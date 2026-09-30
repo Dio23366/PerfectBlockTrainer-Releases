@@ -1,5 +1,63 @@
 # PerfectBlockTrainer Changelog
 
+## V7.0.7 — Broader QTE Coverage, Dynamic Prediction & Visibility Control
+
+### Added
+
+- Added **F8 QTE visibility control** with three display states:
+  - `FULL`
+  - `DIM`
+  - `HIDDEN`
+- Added validated attack coverage for **Garden Masked Fighter / Mysterious Stranger**.
+- Added validated attack coverage for **O.R.C. Broodmother**, including representative:
+  - Slow 5-Combo
+  - Fast 5-Combo
+  - Fast 3-Combo
+- Expanded the current known-creature QTE adaptation pass for the tested Grounded 2 version.
+
+### Improved
+
+- Improved second-layer dynamic prediction for complex moving threats.
+- Improved relative-motion correction when the player approaches or moves away from an incoming attack.
+- Improved representative charge / moving-body behavior for creatures including Mosquito, Wasp, Ladybug, and other charge-style enemies.
+- Improved representative projectile prediction behavior for Black Ant and other validated projectile cases.
+- Improved dynamic prediction behavior for additional creatures including Blue Butterfly and Bee.
+- Improved long-range world-boss FixedContact handling so validated boss attacks are not delayed by ordinary-creature distance admission rules.
+- Improved late-stage timing stability for O.R.C. Broodmother combo sequences.
+
+### Behavior Boundary
+
+- V7.0.7's coverage pass does **not** mean every animation should generate a normal blockable QTE.
+- `NO_CUE`, attacks that are not handled as ordinary Perfect Block attacks, and explicitly deferred special attacks remain intentional exceptions.
+- The new F8 visibility control changes presentation only; prediction and threat tracking continue while the UI is dimmed or hidden.
+
+### Public Release Hardening
+
+- Built the public release from a dedicated hardened public configuration.
+- Excluded development-only diagnostic probes, shadow-observation surfaces, detailed development logging, and development-path exposure from the public build.
+- Preserved promoted production logic for timing, resolver behavior, dynamic prediction, and attack-target authority.
+
+### Validated
+
+- Garden Masked Fighter / Mysterious Stranger representative attacks — **PASS**
+- O.R.C. Broodmother representative attacks — **PASS**
+- O.R.C. Broodmother Slow 5-Combo — **PASS**
+- O.R.C. Broodmother Fast 5-Combo — **PASS**
+- O.R.C. Broodmother Fast 3-Combo — **PASS**
+- F8 `FULL → DIM → HIDDEN → FULL` cycling — **PASS**
+- Representative Mosquito charge behavior — **PASS**
+- Representative rolling / charge-style enemy behavior — **PASS**
+- Release-package clean-install game test — **PASS**
+- Fresh public runtime smoke test — **PASS**
+- Fatal error during accepted final release testing — **NO**
+
+### Compatibility
+
+- Grounded 2
+- UE4SS_Grounded2 1.0.4
+
+---
+
 ## V7.0.6 — Expanded Combat Coverage & Boss Timing Improvements
 
 ### Added
