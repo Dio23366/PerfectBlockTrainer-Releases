@@ -63,6 +63,27 @@ PerfectBlockTrainer 从一个真实玩家问题出发：复杂战斗中的完美
 
 ---
 
+
+## In-Game Preview / 实机效果
+
+The following screenshots show PerfectBlockTrainer running in Grounded 2.
+
+以下截图展示 PerfectBlockTrainer 在《Grounded 2》中的实际运行画面。
+
+| Perfect Block Timing / 单次格挡时机 | Multi-Threat Handling / 多威胁处理 | Dynamic Contact Prediction / 动态接触预测 |
+| :---: | :---: | :---: |
+| <img src="media/combat_single.png" width="100%"> | <img src="media/multi_threat.png" width="100%"> | <img src="media/dynamic_prediction.png" width="100%"> |
+| Real-time Perfect Block timing guidance. | Multiple incoming threats and timing relationships. | Dynamic contact prediction for moving-body and projectile attacks. |
+
+For timing, motion, and transitions, watch the [gameplay demo](https://youtu.be/ae4_FEjTbQI).
+
+*All screenshots are captured from actual PerfectBlockTrainer gameplay in Grounded 2.*
+
+*所有截图均来自 PerfectBlockTrainer 在《禁闭求生 2》中的实际游戏画面。*
+
+
+---
+
 ## Runtime Decision Flow / 实时决策流程
 
 This diagram intentionally shows the **production runtime path** only. Development probes, release hardening, and later validation evidence are not expanded into the main architecture, because they belong to engineering verification rather than the player-facing runtime decision chain.
