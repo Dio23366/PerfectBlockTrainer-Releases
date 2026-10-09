@@ -49,9 +49,9 @@ PerfectBlockTrainer 从一个真实玩家问题出发：复杂战斗中的完美
 ### Public release & usage / 公开发布与使用情况
 
 - **Stable Public Release:** V7.0.7
-- **441 Unique Downloads** on Nexus Mods
-- **657 Total Downloads** on Nexus Mods
-- **2,971 Nexus Views**
+- **496 Unique Downloads** on Nexus Mods
+- **749 Total Downloads** on Nexus Mods
+- **3,375 Nexus Views**
 - **7 Endorsements**
 - **10,000+ cumulative views** across public Bilibili videos
 - **7 public iteration rounds** after the initial V7.0 release
