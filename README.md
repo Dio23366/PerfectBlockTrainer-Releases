@@ -84,6 +84,14 @@ For timing, motion, and transitions, watch the [gameplay demo](https://youtu.be/
 
 ---
 
+## Explore the Project / 深入了解项目
+
+- **[Product Case Study / 产品案例](docs/PRODUCT_CASE_STUDY.md)** — Product goals, design decisions, player feedback, iteration, and validation. / 产品目标、设计取舍、玩家反馈、版本迭代与验收。
+
+- **[Technical Design / 技术设计](docs/TECHNICAL_DESIGN.md)** — Runtime architecture, prediction routing, threat lifecycle, multi-threat arbitration, and engineering validation. / 运行时架构、预测路径、威胁生命周期、多威胁仲裁与工程验收。
+
+---
+
 ## Runtime Decision Flow / 实时决策流程
 
 This diagram intentionally shows the **production runtime path** only. Development probes, release hardening, and later validation evidence are not expanded into the main architecture, because they belong to engineering verification rather than the player-facing runtime decision chain.
