@@ -2,12 +2,12 @@
 
 **Making hidden combat timing understandable without playing the game for the player**
 
-[← Project README](https://github.com/Dio23366/PerfectBlockTrainer-Releases/blob/main/README.md) · [Gameplay Demo](https://youtu.be/ae4_FEjTbQI) · [Nexus Mods](https://www.nexusmods.com/grounded2/mods/198) · [Release History](https://github.com/Dio23366/PerfectBlockTrainer-Releases/blob/main/CHANGELOG.md)
+[← Project README](https://github.com/Dio23366/PerfectBlockTrainer-Releases/blob/main/README.md) · [Gameplay Demo](https://www.youtube.com/watch?v=FDF9kzwFmH4) · [Nexus Mods](https://www.nexusmods.com/grounded2/mods/198) · [Release History](https://github.com/Dio23366/PerfectBlockTrainer-Releases/blob/main/CHANGELOG.md)
 
 **Language / 语言：** [English](#english) · [简体中文](#简体中文)
 
 > **Project:** PerfectBlockTrainer (PBT), a real-time Perfect Block timing assistant for *Grounded 2*  
-> **Public release covered:** V7.0.7 · **Platform/runtime:** Grounded 2 PC, UE4SS_Grounded2 1.0.4  
+> **Public release covered:** V7.0.8 · **Platform/runtime:** Grounded 2 UE5.7.4 PC, UE4SS_Grounded2 1.0.6  
 > **My scope:** Product definition, interaction and runtime-system design, AI-assisted implementation, in-game validation, releases, and community support  
 > **Project status:** Publicly distributed mod; ongoing maintenance. Multiplayer guest/client QTE support is not yet complete.
 
@@ -90,7 +90,7 @@ The key separation is:
 
 A time estimate can be valid as a calculation yet still be inappropriate as player guidance. Making that distinction explicit was central to the product's reliability.
 
-## 4. Four consequential product decisions
+## 4. Product decisions and their evolution
 
 ### Decision A — Preserve player agency instead of automating the response
 
@@ -127,16 +127,19 @@ V7.0.6 added **GOLD overlap** when two independent blockable green windows share
 
 *The interface represents more than one incoming threat while preserving the distinction between their timing windows.*
 
-### Decision D — Give players control over guidance intensity
+### Decision D — Reduce manual display management
 
-**Feedback:** a player requested a way to hide the QTE ring.  
-**Chosen for V7.0.7:** an F8 display cycle: `FULL → DIM → HIDDEN → FULL`.
+**Historical V7.0.7 choice:** F8 cycled FULL / DIM / HIDDEN in response to a request to hide guidance.
 
-The original experience assumed the player always wanted the most visible guidance. That is useful while learning, but less appropriate once a player wants to practice without constant prompts or reduce screen obstruction.
+**V7.0.8 choice:** show QTE only when the current attack warrants a cue and clear it automatically; remove the manual mode cycle. Player attention is managed through cue relevance and lifecycle rather than another visibility setting.
 
-Crucially, **the display mode changes presentation only**. Internal attack prediction and threat tracking continue while the ring is dimmed or hidden.
+### Decision E — Preserve combat knowledge while replacing presentation
 
-**Product lesson:** once core reliability improves, control over *how much* assistance to see becomes as important as expanding *what* the system can recognize.
+The UE5.7 update made old presentation assets a compatibility risk. Rewriting already-working timing rules would not solve that display boundary. The migration retained prediction and arbitration, introduced copied display snapshots and ultimately drew natively inside the DLL.
+
+The intermediate C# renderer proved the geometry and interaction. Moving its drawing into native code removed a companion process and bundled .NET: the package changed from about 66.9 MiB to 223,237 bytes. This is a deployment dependency improvement, not a claim of higher FPS.
+
+A green/red/gold startup preview provides visible loading feedback, but does not pretend to certify enemy timing. Empty enabled.txt activation and one mod directory reduce installation work without overwriting another mod's enable list.
 
 ## 5. UX semantics: one cue must mean one thing
 
@@ -150,7 +153,7 @@ The visual language is intentionally small and consistent:
 | **GOLD overlap** | Shared overlap of independent blockable windows | Does not change game rules or combine attacks |
 | **Red warning** | Attack classified as unblockable / requiring dodge awareness | Not a generic “high damage” indicator |
 | **No cue** | No ordinary Perfect Block prompt should be shown | Includes intentional `NO_CUE` and deferred special cases |
-| **FULL / DIM / HIDDEN** | Player-selected cue visibility | Does not stop runtime threat processing |
+| **Attack-driven visibility** | Show only while a current cue needs attention | No manual F8 mode cycle in V7.0.8 |
 
 The mod deliberately does not claim universal green-cue coverage. Some attacks are intentionally classified as warnings, `NO_CUE`, or deferred cases.
 
@@ -165,7 +168,8 @@ PBT's releases reflect changes in what mattered most as the product matured.
 | **V7.0.3–V7.0.4** | More attack types and more reliable complex combat | Improve projectile/attack semantics and mixed-threat handling |
 | **V7.0.5** | Incorrect or stale prompts in mixed encounters | Strengthen targeting, lifecycle cleanup, and threat stability |
 | **V7.0.6** | Boss coverage and multi-threat readability | Expand validated boss/variant attacks; add GOLD overlap |
-| **V7.0.7** | Dynamic prediction, broader coverage, and player choice | Improve moving-body/relative-motion/projectile cases; add F8 visibility control |
+| **V7.0.7** | Dynamic prediction, broader coverage, and player choice | Improve moving-body/relative-motion/projectile cases; add historical F8 control |
+| **V7.0.8** | Engine compatibility and display independence | Preserve the core; copied snapshots, native drawing, automatic visibility, smaller installation |
 
 Detailed creature-by-creature changes remain in the [CHANGELOG](https://github.com/Dio23366/PerfectBlockTrainer-Releases/blob/main/CHANGELOG.md) and [GitHub Releases](https://github.com/Dio23366/PerfectBlockTrainer-Releases/releases). The purpose of this case study is to explain **why the priorities and design changed**, rather than repeat every patch note.
 
@@ -196,7 +200,7 @@ V7.0.7 strengthened second-layer dynamic prediction and relative-motion correcti
 | **Build & deployment** | Did the intended build/package actually reach the test runtime? | Build status, DLL identity, package contents, deployment checks |
 | **Runtime behavior** | Did attack identity, target relationship, contact prediction, threat state, and cue scheduling behave as intended? | Development-time runtime logs, traces, and focused diagnostic checks |
 | **In-game experience** | Did the player actually see timely, readable, stable QTE behavior? | Manual in-game observation and captured gameplay footage |
-| **Release acceptance** | Does the actual public package work without relying on development-only files? | Fresh-runtime and clean-install game testing, release manifest and SHA256 checks |
+| **Release acceptance** | Does the actual public package work without relying on development-only files? | Version-scoped runtime/visual feedback and package identity checks; V7.0.8 offline clean-layout checks do not replace a full clean-package game test |
 
 A runtime log saying a cue was scheduled does not, by itself, establish that the player saw it correctly. Conversely, an apparently good screenshot cannot prove the underlying target selection or lifecycle was correct. The acceptance decision must consider both.
 
@@ -210,14 +214,14 @@ Public release builds intentionally exclude development-only probes and detailed
 
 | Public signal | Recorded value |
 | --- | ---: |
-| Stable public release | **V7.0.7** |
-| Nexus unique downloads | **496** |
-| Nexus total downloads | **749** |
-| Nexus page views | **3,375** |
-| Nexus endorsements | **7** |
-| Public Bilibili video views | **10,000+ cumulative** |
+| Public release shown in the supplied screenshot | **V7.0.8** |
+| Nexus unique downloads | **574** |
+| Nexus total downloads | **863** |
+| Nexus page views | **4,189** |
+| Nexus endorsements | **10** |
+| Public Bilibili video views (historical October 9 snapshot) | **10,000+ cumulative** |
 
-*Snapshot: October 9, 2026; figures reported from the project's public-facing README/Nexus activity at the time of writing. These are distribution and discovery indicators—not active users, retention, conversion, or evidence that every installation works without issue.*
+*Nexus figures: screenshot supplied on October 29, 2026, showing V7.0.8. Bilibili views retain the earlier October 9 snapshot. These are distribution and discovery indicators—not active users, retention, conversion, or evidence that every installation works without issue.*
 
 ### What the project demonstrates
 
@@ -247,7 +251,7 @@ Three principles guide continued development:
 **让隐藏的战斗时序变得易于理解，同时保留玩家自己的操作与判断**
 
 > **项目：** PerfectBlockTrainer（PBT），《Grounded 2 / 禁闭求生 2》的实时完美格挡时机辅助 Mod  
-> **本文对应公开版本：** V7.0.7 · **平台 / 运行环境：** PC 版 Grounded 2、UE4SS_Grounded2 1.0.4  
+> **本文对应公开版本：** V7.0.8 · **平台 / 运行环境：** PC 版 Grounded 2 UE5.7.4、UE4SS_Grounded2 1.0.6  
 > **个人负责范围：** 产品定位、交互与运行时系统设计、AI 辅助实现、游戏内验证、版本发布及社区支持  
 > **项目状态：** 已公开发布并持续维护；多人联机客机 / Client 端的 QTE 尚未完整支持。
 
@@ -328,7 +332,7 @@ PBT 的核心交互约定是：
 
 一个预测时间即使在计算上成立，也不一定适合成为对玩家的操作建议。把这几件事明确分开，是提高可靠性的核心。
 
-### 4. 四项关键产品决策
+### 4. 产品决策及其演进
 
 #### 决策 A：保留玩家操作权，而不是自动执行格挡
 
@@ -365,16 +369,19 @@ V7.0.6 加入了 **GOLD（金色重叠区域）**：当两个独立可格挡攻�
 
 *界面可以同时表达多个即将到来的威胁，并保留它们各自时机窗口的区别。*
 
-#### 决策 D：允许玩家自行控制提示强度
+#### 决策 D：减少玩家手动管理显示状态
 
-**玩家反馈：** 有玩家希望通过快捷键隐藏 QTE 圆环。  
-**V7.0.7 的选择：** 增加 F8 切换：`FULL → DIM → HIDDEN → FULL`。
+**V7.0.7 的历史选择：** 针对隐藏提示需求，引入 F8 的 FULL / DIM / HIDDEN 循环。
 
-最初的使用体验默认玩家始终希望看到最醒目的引导。这在学习阶段很有价值，但当玩家想减少视觉遮挡，或者尝试在较少提示下自主练习时，这种默认并不总是合适。
+**V7.0.8 的选择：** 让 QTE 只在攻击需要提示时出现，并按生命周期自动清理，移除手动模式循环。用提示的相关性管理注意力，减少玩家需要维护的设置。
 
-关键是：**显示模式只改变 Presentation（视觉呈现）**。即使圆环变暗或隐藏，内部攻击预测和 Threat 跟踪仍会继续运行。
+#### 决策 E：保留战斗知识，替换显示依赖
 
-**产品经验：** 当核心可靠性逐步提高之后，允许玩家决定“希望看到多少辅助”，也会成为与扩大“系统能够识别什么”同样重要的体验问题。
+UE5.7 更新让旧显示资产成为兼容风险；重写有效时序算法并不能修复显示边界。因此保留预测与仲裁，以值快照接口连接最终的 DLL 内原生绘图。
+
+中间 C# 版本验证了几何与交互，原生迁移再移除伴随进程和 .NET 分发依赖，包体从约 66.9 MiB 减至 223,237 字节。这体现分发依赖的变化，不宣称帧率因此提高。
+
+绿／红／金启动演示用于确认加载和表达视觉语义，不冒充攻击时序验收；空白 enabled.txt 与单模组目录降低安装操作，也避免覆盖其他模组的启用配置。
 
 ### 5. UX 语义：每一种提示都应表达明确含义
 
@@ -388,7 +395,7 @@ PBT 刻意保持一套较少、但一致的视觉语义：
 | **GOLD 金色重叠区** | 不同可格挡窗口在时间上的公共部分 | 不改变游戏规则，也不合并攻击 |
 | **红色警告** | 被归类为不可格挡、应注意闪避的攻击 | 不是泛指“高伤害攻击” |
 | **无提示（No cue）** | 当前不应显示普通 Perfect Block 提示 | 包括有意设置的 `NO_CUE` 和延期处理的特殊攻击 |
-| **FULL / DIM / HIDDEN** | 玩家选择的 QTE 可见程度 | 不停止内部威胁处理 |
+| **随攻击显示** | 当前有效提示出现，结束后清理 | V7.0.8 不再使用 F8 模式循环 |
 
 本 Mod 并不宣称所有攻击都会显示绿色 QTE。部分攻击本来就应该采用警告、`NO_CUE` 或延期适配的处理方式。
 
@@ -403,7 +410,8 @@ PBT 的版本演进，体现的是随着产品成熟，开发优先级也在不�
 | **V7.0.3–V7.0.4** | 更多攻击类型与复杂战斗的可靠性 | 加强投射物/攻击语义及混合威胁处理 |
 | **V7.0.5** | 混合战斗中错误、过时或残留的提示 | 强化目标确认、生命周期清理和 Threat 稳定性 |
 | **V7.0.6** | Boss 覆盖与多威胁提示可读性 | 扩大已验证的 Boss / 变体招式覆盖；加入 GOLD 重叠显示 |
-| **V7.0.7** | 动态预测、覆盖扩展与玩家自主选择 | 优化移动本体、相对运动及投射物；加入 F8 显示控制 |
+| **V7.0.7** | 动态预测、覆盖扩展与玩家自主选择 | 优化移动本体、相对运动及投射物；加入当时的 F8 控制 |
+| **V7.0.8** | 引擎兼容与显示解耦 | 保留核心；值快照、原生绘图、自动可见与精简安装 |
 
 逐个生物和招式的详细更新保存在 [CHANGELOG](https://github.com/Dio23366/PerfectBlockTrainer-Releases/blob/main/CHANGELOG.md) 与 [GitHub Releases](https://github.com/Dio23366/PerfectBlockTrainer-Releases/releases)。这份案例的重点不是复述每条 Patch Note，而是解释：**为什么当时要调整产品优先级与设计方式**。
 
@@ -448,14 +456,14 @@ Runtime 日志说“已调度 QTE”，并不能单独证明玩家真正看到�
 
 | 公开指标 | 记录值 |
 | --- | ---: |
-| 当前稳定公开版本 | **V7.0.7** |
-| Nexus Unique Downloads（独立下载） | **496** |
-| Nexus Total Downloads（总下载） | **749** |
-| Nexus 页面浏览量 | **3,375** |
-| Nexus Endorsements（认可数） | **7** |
-| Bilibili 公开视频累计播放量 | **10,000+** |
+| 所提供截图显示的公开版本 | **V7.0.8** |
+| Nexus Unique Downloads（独立下载） | **574** |
+| Nexus Total Downloads（总下载） | **863** |
+| Nexus 页面浏览量 | **4,189** |
+| Nexus Endorsements（认可数） | **10** |
+| Bilibili 公开视频累计播放量（10月9日历史快照） | **10,000+** |
 
-*数据快照日期：2026 年 10 月 9 日；数字依据本文撰写时项目公开 README / Nexus 活动记录。它们属于发布、传播和发现指标，不等于活跃用户、留存、转化率，也不能证明每一次安装都完全没有问题。*
+*Nexus 数据来自2026年10月29日提供的截图，页面显示版本为V7.0.8；Bilibili播放量保留10月9日历史快照。它们属于发布、传播和发现指标，不等于活跃用户、留存、转化率，也不能证明每一次安装都完全没有问题。*
 
 #### 这个项目体现了什么
 
@@ -486,7 +494,7 @@ Runtime 日志说“已调度 QTE”，并不能单独证明玩家真正看到�
 - [Detailed version history / 版本更新记录](https://github.com/Dio23366/PerfectBlockTrainer-Releases/blob/main/CHANGELOG.md)
 - [Installation instructions / 安装说明](https://github.com/Dio23366/PerfectBlockTrainer-Releases/blob/main/INSTALL.md)
 - [Official release packages / 正式发布包](https://github.com/Dio23366/PerfectBlockTrainer-Releases/releases)
-- [Real gameplay demo / 实机演示](https://youtu.be/ae4_FEjTbQI)
+- [Real gameplay demo / 实机演示](https://www.youtube.com/watch?v=FDF9kzwFmH4)
 - [Nexus Mods community page / Nexus 社区页面](https://www.nexusmods.com/grounded2/mods/198)
 
 *PerfectBlockTrainer is an independently maintained mod for Grounded 2. Grounded 2 is developed by Obsidian Entertainment and published by Xbox Game Studios.*

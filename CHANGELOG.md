@@ -1,5 +1,43 @@
 # PerfectBlockTrainer Changelog
 
+## V7.0.8 — Native Presentation Architecture & UE5.7 Migration
+
+### Architecture / 架构
+
+- Retained the C++ attack-prediction, threat-admission, arbitration and scheduling core.
+- Added a versioned copied QTE snapshot boundary carrying world/attack/hit identities and assigned visual windows.
+- Replaced the UE5.6 Widget/material/LogicMods display with a native C++ GDI+ drawing thread inside main.dll.
+- Removed the intermediate companion EXE and bundled .NET runtime from the final package.
+- 保留成熟预测核心，通过值快照连接 DLL 内原生绘图，不再依赖旧 UE5.6 显示资产。
+
+### Combat and UX / 战斗与交互
+
+- Added supported Termite-family melee and explosion warnings, plus Centipede combo, slam, emergence and follow-up routes.
+- Preserved core-defined green/red/gold semantics with hollow frames and a red Bézier spindle.
+- Added a loading preview with immediate green/red/gold frames and clearance-based cleanup.
+- Replaced the historical F8 visibility cycle with automatic attack-driven display and cleanup.
+- 白蚁与蜈蚣新增路线、原生圆环及启动演示；游走/冲刺头部接触提示仍延期。
+
+### Distribution / 分发
+
+- One PerfectBlockTrainerCpp folder with enabled.txt, default visual config and main.dll; no manual PBT mods.txt edit.
+- Final native package: 223,237 bytes (about 218 KiB); old EXE/runtime package was about 66.9 MiB.
+- Includes one combined third-party notice, not a player-facing checksum manifest.
+- 升级移除旧 PBT LogicMods；中间 EXE 版另需清理 PBTQteAutoStart 并迁移个人配置。
+
+### Verification scope / 验证范围
+
+Native rendering passed offline core/renderer checks, display comparisons, window lifetime tests and a user-confirmed basic gameplay session. ZIP extraction, installed DLL identity and a legacy-free native host were checked separately. This does not relabel the historical V7.0.7 full-roster/clean-install results as a complete UE5.7 regression; broader multiplayer, long-run and final clean-package game testing retain their own scope.
+
+### Compatibility
+
+- Grounded 2 UE5.7.4, Windows x64
+- Tested UE4SS_Grounded2 1.0.6 distribution
+
+---
+
+
+
 ## V7.0.7 — Broader QTE Coverage, Dynamic Prediction & Visibility Control
 
 ### Added

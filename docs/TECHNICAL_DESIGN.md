@@ -1,18 +1,18 @@
 # PerfectBlockTrainer — Technical Design / 技术设计
 
-> **Public architecture and engineering case study — V7.0.7**  
-> **正式公开版架构与工程设计案例 — V7.0.7**
+> **Public architecture and engineering case study — V7.0.8**  
+> **正式公开版架构与工程设计案例 — V7.0.8**
 >
-> Platform: **Grounded 2** · Runtime framework: **UE4SS_Grounded2 1.0.4**  
+> Platform: **Grounded 2 UE5.7.4** · Runtime framework: **UE4SS_Grounded2 1.0.6**  
 > Focus: runtime interpretation, predictive combat cues, threat lifecycle, multi-threat arbitration, validation
 
 **Languages / 语言：** [English](#english) · [简体中文](#chinese)
 
-**Project:** [README](../README.md) · [Changelog](../CHANGELOG.md) · [Gameplay demo](https://youtu.be/ae4_FEjTbQI) · [Public releases](https://github.com/Dio23366/PerfectBlockTrainer-Releases/releases)
+**Project:** [README](../README.md) · [Changelog](../CHANGELOG.md) · [Gameplay demo](https://www.youtube.com/watch?v=FDF9kzwFmH4) · [Public releases](https://github.com/Dio23366/PerfectBlockTrainer-Releases/releases)
 
-**Documentation scope.** This document explains the design and behavior of the publicly released PerfectBlockTrainer V7.0.7. It is a technical *design explanation*, not a publication of the private development source tree. Diagrams describe architectural responsibilities rather than literal C++ classes, function calls, or executable state-enum definitions. Release-level validation statements are based on the project's published README and CHANGELOG; internal logs and full implementation source are not reproduced here.
+**Documentation scope.** This document explains the design and behavior of the publicly released PerfectBlockTrainer V7.0.8. It is a technical *design explanation*, not a publication of the private development source tree. Diagrams describe architectural responsibilities rather than literal C++ classes, function calls, or executable state-enum definitions. Release-level validation statements are based on the project's published README and CHANGELOG; internal logs and full implementation source are not reproduced here.
 
-**文档范围。** 本文解释 PerfectBlockTrainer V7.0.7 公开版本的技术设计与已发布行为，而不是公开完整私人开发源码。图示用于说明真实存在的职责与数据流，不等同于逐行 C++ 调用关系、类定义或状态枚举。文中的公开验收结论以项目 README 与 CHANGELOG 为依据；本文不提供完整内部运行日志或源码。
+**文档范围。** 本文解释 PerfectBlockTrainer V7.0.8 公开版本的技术设计与已发布行为，而不是公开完整私人开发源码。图示用于说明真实存在的职责与数据流，不等同于逐行 C++ 调用关系、类定义或状态枚举。文中的公开验收结论以项目 README 与 CHANGELOG 为依据；本文不提供完整内部运行日志或源码。
 
 ---
 
@@ -34,12 +34,13 @@ Game runtime supplies observations
 → Grounded 2 applies its original combat rules
 ```
 
-The implementation spans two complementary responsibilities:
+The current implementation separates prediction, data publication and native drawing, while the game retains combat authority:
 
 | Responsibility | Engineering role |
 |---|---|
 | UE4SS and C++ runtime | Observe attack-related runtime information, reconstruct attack identity, select prediction paths, maintain threats, and schedule cues. |
-| Blueprint / LogicMods presentation | Render timing rings, pointers, semantic warning colors, overlap indications, and visibility states. |
+| Versioned copied snapshot | Publish world/attack/hit identities, assigned visual windows, phase and cue semantics without exposing Unreal object pointers. |
+| Native C++ presentation thread | Read coherent snapshots and draw hollow windows/ring/pointer through Windows GDI+; no UE5.6 assets, child EXE or CLR. |
 | Grounded 2 | Remains the authority for actual blocking, dodging, hit results, and Perfect Block validity. |
 
 **Design invariant:** a visible prompt never means the mod has pressed Block for the player. PBT does not change the underlying Perfect Block window or damage rules.
@@ -57,14 +58,15 @@ flowchart TD
     G{"Threat still valid?"}
     H["Multi-threat arbitration<br/>Priority and presentation stability"]
     I["Cue scheduling<br/>Show, update, retarget, clear"]
-    J["QTE presentation<br/>Green / red / gold; FULL / DIM / HIDDEN"]
+    S["Versioned copied QTE snapshot<br/>World / attack / hit / visual windows"]
+    J["Native UI thread and transparent window<br/>Green / red / gold; attack-driven visibility"]
     X["Discard candidate"]
     Y["Invalidate and clear"]
     A --> B --> C --> D --> E
     E -- No --> X
     E -- Yes --> F --> G
     G -- No --> Y
-    G -- Yes --> H --> I --> J
+    G -- Yes --> H --> I --> S --> J
     I -. "Re-evaluate on change" .-> G
 ```
 
@@ -72,7 +74,7 @@ Four concepts must stay distinct:
 
 > **Predicted contact time ≠ Eligible threat ≠ Selected presentation threat ≠ Visible QTE.**
 
-Each separation addresses a different failure mode. A mathematically plausible contact may target another actor; a valid threat may not be the next one to show; and a selected cue may be intentionally invisible in HIDDEN mode.
+Each separation addresses a different failure mode. A mathematically plausible contact may target another actor; a valid threat may not be the next one to show; and a scheduled cue can still fail to render when publication is stale or presentation initialization fails.
 
 ## 3. Attack identity and semantic reconstruction
 
@@ -125,7 +127,7 @@ These nodes explain the **decision criteria**, not the exact executable conditio
 
 **Trade-off.** Conservative admission can suppress a cue when target evidence is unreliable, but showing a confidently wrong cue is worse: it teaches the player to react to an attack aimed elsewhere.
 
-**Observed product boundary.** Reliable local target information is a particular challenge for multiplayer clients. Single-player and host-side support are the supported paths; full guest/client QTE behavior is **not implemented reliably** in V7.0.7. Rendering a ring on the client is not evidence that client-side target authority works.
+**Observed product boundary.** Reliable local target information is a particular challenge for multiplayer clients. Single-player and host-side support are the supported paths; full guest/client QTE behavior remains **unverified as a complete supported path** after the V7.0.8 migration. Rendering a ring on the client is not evidence that client-side target authority works.
 
 ## 6. Case B — Threat lifecycle and stale-state prevention
 
@@ -183,7 +185,21 @@ Visual semantics describe the *kind* of recommendation, not the internal predict
 | GOLD overlap | Shared overlap of two independent blockable timing windows. |
 | No cue | A route intentionally excluded from ordinary QTE presentation. |
 
-In V7.0.7, **F8** cycles `FULL → DIM → HIDDEN → FULL`. This changes visual presentation only: attack observation, prediction, and threat tracking continue in DIM and HIDDEN modes. That separation prevents a UI preference from silently changing combat-state behavior.
+### V7.0.8: copied data, native drawing and lifecycle
+
+The migration preserves the prediction/scheduler core. Its V1 snapshot contains ABI version and byte size, publication sequence, world and attack generations, hit keys, assigned visual intervals, pointer phase/period, binding flags and bounded event history. A copied snapshot is a current view, not a guaranteed infinite event queue.
+
+Publication is guarded by a consistency stamp. The reader checks the stamp before/after copying, bounds/version, clock frequency and freshness, world/local binding and slot identities. Incomplete or stale data does not become a fresh cue. The renderer uses the assigned visual interval, not raw PB metadata to widen a window, and does not run a second predictor.
+
+A dedicated thread in the same PBT DLL owns the Win32 transparent, click-through, no-activation window and GDI+ drawing resources. It does not dereference Unreal objects. Only the local ring-sized premultiplied-alpha surface is drawn, scaled from game client height. Hollow frames cut away the underlying ring, the pointer is a closed Bézier spindle, and core-declared GOLD is drawn in the foreground.
+
+Startup is requested from a viewport callback, not loader-lock initialization. Stop signals the worker without blocking host teardown; the worker holds a module reference until its window/resources are cleaned, then releases it with thread exit. This avoids treating a running UI thread as safe-to-unload code.
+
+The startup preview waits for stable publication, pauses across loading gaps, presents all three frames immediately, removes each after full pointer clearance, and yields to a real attack cue. Combat display is automatic; the historical F8 cycle is removed.
+
+**Migration trade-off:** the intermediate self-contained C# companion isolated display in another process, at the cost of a large .NET payload. The final native renderer removes that process/runtime dependency, but moves drawing failure into the game process. Module lifetime, bounded allocations and actual window tests therefore matter. It remains a separate transparent window, not an Unreal HUD or DXGI hook; OBS Game Capture may omit it.
+
+**Verification:** 160 synthetic snapshot displays, 120 preview frames and three pixel-exact raster comparisons matched the preceding C# implementation. Twenty restart cycles and asynchronous stop/unload were exercised in a native host. These checks establish the tested renderer behavior, not every game's window mode or multiplayer scenario.
 
 ## 9. Case D — Dynamic prediction and visual continuity
 
@@ -206,7 +222,7 @@ PBT uses distinct evidence layers. Success at one layer cannot substitute for su
 | Build / deployment | Did the target binary build and deploy as intended? | Build failure, missing or mismatched DLL. |
 | Runtime behavior | Did identity, target, prediction, threat state, and scheduler behave as intended? | Wrong target, invalid admission, stale threat. |
 | In-game visual behavior | Did the player actually see a readable cue at the intended stage? | White ring without the expected green window, flicker, visible discontinuity. |
-| Public package acceptance | Does the distributed package work in a clean player-style installation? | Missing LogicMods files or release-only configuration regression. |
+| Public package acceptance | Does the distributed package work in a clean player-style installation? | Missing native configuration/activation files or release-only configuration regression. |
 
 For a change such as *“show a stable QTE during a moving attack's wind-up”*, the intended acceptance is therefore not merely “DLL compiled” or “predictor emitted a timestamp.” It also requires the visible QTE to appear during the intended phase, remain coherent, and clear when the threat ends.
 
@@ -220,11 +236,11 @@ Runtime never admitted an eligible threat  /  UI shows no cue
 → Investigate attack identity, target evidence, or threat admission first.
 ```
 
-These are **diagnostic hypotheses**, not proofs of a single root cause from appearance alone. A white ring proves some presentation assets loaded; it does not independently prove that the C++ threat pipeline is fully active.
+These are **diagnostic hypotheses**, not proofs of a single root cause from appearance alone. A white ring proves that some drawing occurred; it does not independently prove that the C++ threat pipeline is fully active.
 
-### Representative public V7.0.7 acceptance
+### Historical V7.0.7 baseline and current V7.0.8 evidence
 
-Published V7.0.7 validation includes the Mysterious Stranger, O.R.C. Broodmother's Slow 5-Combo / Fast 5-Combo / Fast 3-Combo, representative charge behavior, the F8 visibility cycle, public-runtime smoke testing, and clean-install package testing. The full test scripts, raw logs, and private source tree are not part of this public repository.
+Published V7.0.7 validation includes the Mysterious Stranger, O.R.C. Broodmother's Slow 5-Combo / Fast 5-Combo / Fast 3-Combo, representative charge behavior, the F8 visibility cycle, public-runtime smoke testing, and clean-install package testing. For V7.0.8, the native build preserves the pinned SDK guard, 57 UE4SS imports and four public exports; the core source comparison restricts changes to the intended presentation integration. Runtime logs recorded preview and combat render/clear states, and the user confirmed normal visible gameplay. Final package extraction and a legacy-free native-host layout passed; additional clean-package game regression remains a separate gate. The full test scripts, raw logs and private source tree are not part of this public repository.
 
 ## 11. Engineering constraints and non-goals
 
@@ -232,7 +248,7 @@ Published V7.0.7 validation includes the Mysterious Stranger, O.R.C. Broodmother
 - **No replacement of game authority:** Grounded 2 still judges the actual Perfect Block.
 - **No guarantee of a cue for every animation:** `NO_CUE`, unblockable, and deferred special cases have distinct semantics.
 - **No claim of reliable guest/client support:** client-side attack targeting remains an unresolved limitation.
-- **No claim that attack data is already externalized:** the current public architecture describes data-driven *routing concepts*, but moving attack-specific records out of compiled C++ is a possible future refactor, not a completed V7.0.7 feature.
+- **No claim that attack data is already externalized:** the current public architecture describes data-driven *routing concepts*, but moving attack-specific records out of compiled C++ is a possible future refactor, not a completed V7.0.8 feature.
 - **No public-source claim:** diagrams and examples in this document are explanations, not excerpts of the undistributed production source.
 
 ## 12. Engineering takeaway
@@ -266,7 +282,8 @@ PerfectBlockTrainer 的定位是**战斗训练与实时决策辅助系统**，�
 | 职责 | 在系统中的作用 |
 |---|---|
 | UE4SS 与 C++ Runtime | 获取攻击相关运行时信息、还原攻击身份、选择预测路径、维护威胁状态与安排提示时机。 |
-| Blueprint / LogicMods 表现层 | 绘制圆环、指针、不同语义的警告颜色、金色重叠区以及显示模式。 |
+| 有版本的数据快照 | 传递世界/攻击/段数身份、已分配窗口、相位与语义，不暴露 Unreal 对象指针。 |
+| 原生 C++ 绘图线程 | 只读消费快照，通过 Windows GDI+ 绘制圆环与空心框；不依赖 UE5.6 资产、伴随 EXE 或 CLR。 |
 | Grounded 2 游戏本体 | 仍然决定格挡、闪避、命中和真正的完美格挡是否成立。 |
 
 **关键边界：** QTE 出现在屏幕上，不意味着 Mod 已经代替玩家按下格挡键。PBT 不修改游戏的格挡窗口或伤害规则。
@@ -284,14 +301,15 @@ flowchart TD
     G{"威胁仍然有效？"}
     H["多威胁仲裁<br/>优先级与显示稳定性"]
     I["提示调度<br/>显示、更新、切换、清理"]
-    J["QTE 表现<br/>绿 / 红 / 金；FULL / DIM / HIDDEN"]
+    S["有版本的值快照<br/>世界 / 攻击 / 段数 / 显示窗口"]
+    J["原生绘图线程与透明窗口<br/>绿 / 红 / 金；随攻击显示"]
     X["丢弃候选"]
     Y["失效并清除"]
     A --> B --> C --> D --> E
     E -- 否 --> X
     E -- 是 --> F --> G
     G -- 否 --> Y
-    G -- 是 --> H --> I --> J
+    G -- 是 --> H --> I --> S --> J
     I -. "状态改变后重新判断" .-> G
 ```
 
@@ -299,7 +317,7 @@ flowchart TD
 
 > **预测到接触时间 ≠ 构成有效威胁 ≠ 成为当前展示对象 ≠ 屏幕上实际可见 QTE。**
 
-每一次职责分离都对应一类真实问题。数学上可以计算接触时机，但攻击可能打向其他目标；一个合法威胁未必是最该展示的威胁；而 HIDDEN 模式下，即使内部正常预测和调度，玩家也会主动选择不看见 QTE。
+每一次职责分离都对应一类真实问题。数学上可以计算接触时机，但攻击可能打向其他目标；一个合法威胁未必是最该展示的威胁；而数据过期或显示初始化失败时，内部已经调度的窗口也不等于画面上已经可见。
 
 ## 3. 攻击身份与语义还原
 
@@ -352,7 +370,7 @@ flowchart TD
 
 **取舍。** 保守的准入机制在目标证据不足时可能放弃一次提示，但随意显示一个明确错误的 QTE，反而会误导玩家去格挡根本没有攻击自己的招式。
 
-**当前限制。** 多人客机难点恰恰在于攻击目标信息不够可靠。V7.0.7 以单人和房主侧为已支持路径，Guest / Client 端 QTE **尚未达到可靠完整支持**。客机上能出现白色圆环，不等于已经解决了客户端目标判定。
+**当前限制。** 多人客机难点恰恰在于攻击目标信息不够可靠。V7.0.8 不将既有单人和房主路径的结果外推为 Guest / Client 端 QTE **可靠完整支持**。客机上能出现白色圆环，不等于已经解决了客户端目标判定。
 
 ## 6. 技术案例 B：Threat Lifecycle 与过期状态清理
 
@@ -410,7 +428,21 @@ flowchart LR
 | 金色重叠区 | 两个独立可格挡窗口的公共重叠时间。 |
 | 不显示 | 当前攻击被定义为不应产生普通 QTE 的路线。 |
 
-V7.0.7 加入 **F8** 显示模式切换：`FULL → DIM → HIDDEN → FULL`。它只影响可见表现。即使玩家选择 DIM 或 HIDDEN，攻击观察、预测和威胁状态跟踪依旧运行。这样用户的界面偏好就不会意外改变底层战斗时序处理。
+### V7.0.8：值快照、原生绘图与生命周期
+
+核心仍负责预测、准入、仲裁和调度。V1 快照携带版本/大小、发布序号、世界与攻击代次、段数键、已分配显示窗口、指针相位、绑定状态及有限事件历史。快照是当前状态视图，不是无限可靠事件队列。
+
+发布过程有一致性标记；消费者在复制前后检查标记，并校验版本、容量、时钟频率、新鲜度、世界/本地玩家绑定及槽位身份。过期和不完整数据不会当作新提示。绘图只采用已分配窗口，不用原始 PB 元数据擅自扩大绿框，也不运行第二套接触预测。
+
+DLL 内独立 UI 线程持有 Win32 透明、点击穿透且不抢焦点的窗口与 GDI+ 资源，不直接访问 Unreal 对象。画布仅覆盖圆环附近区域，按游戏客户区高度缩放；空心框裁掉下面的圆环，指针由闭合贝塞尔曲线构成，核心明确给出的 GOLD 在前景绘制。
+
+启动由 viewport 回调触发，不在 DllMain 初始化。退出只发停止信号，不阻塞宿主销毁；线程持有模块引用，清理窗口与资源后，再随线程退出释放引用。
+
+启动演示等待稳定数据，加载间隙暂停，三色框与白环同时出现，指针完整经过后逐个清理；真实攻击会优先接管。战斗提示随攻击显示，历史 F8 循环已移除。
+
+**迁移取舍：** 中间 C# 方案用独立进程承载显示，但需要随包携带 .NET。最终原生版减少分发依赖，也将绘图故障的影响范围带进游戏进程，因此资源边界和退出验证更重要。它仍是独立透明窗口，不是 UE HUD 或 DXGI 渲染钩子，不能据此宣称 OBS 游戏采集必然包含圆环。
+
+**验证范围：** 160 份快照、120 帧启动动画和三张逐像素图像对照与前版 C# 一致；原生宿主验证了 20 次启停及异步停止/卸载。这些不替代所有游戏窗口模式、多人和长期运行测试。
 
 ## 9. 技术案例 D：动态接触预测与视觉连续性
 
@@ -433,7 +465,7 @@ PBT 的验收应区分不同的证据层。上一层成功，不能直接替代�
 | 构建与部署 | DLL 是否按目标成功构建和部署 | 编译失败、DLL 缺失或身份不一致。 |
 | 运行时行为 | 攻击身份、目标、预测、Threat、Scheduler 是否按预期工作 | 错误目标、未准入、过期威胁复活。 |
 | 游戏内视觉体验 | 玩家是否在正确阶段实际看到清晰、稳定的 QTE | 只见白环没有预期绿框、闪烁、视觉跳变。 |
-| 正式安装包验收 | 对玩家发布的 ZIP 能否全新安装后工作 | LogicMods 文件缺失、公开构建配置差异。 |
+| 正式安装包验收 | 对玩家发布的 ZIP 能否全新安装后工作 | 原生配置或启用文件缺失、公开构建配置差异。 |
 
 例如“让某个移动攻击在起手阶段稳定出现 QTE”，验收条件就不能只是“DLL 编译成功”或“预测器产生一个时间戳”；还必须确认提示在应有阶段出现、变化连续，并在威胁结束后正确清理。
 
@@ -447,11 +479,11 @@ Runtime 根本没有准入有效威胁  /  画面没有 QTE
 → 优先检查攻击身份、目标证据或 Threat Admission。
 ```
 
-这些只是**定位方向**，不能仅凭画面就断言某个唯一根因。能显示白色圆环，说明部分 UI 资源已经加载，但不能独立证明 C++ 的完整威胁处理链已正常工作。
+这些只是**定位方向**，不能仅凭画面就断言某个唯一根因。能显示白色圆环，说明绘图链路已有部分输出，但不能独立证明 C++ 的完整威胁处理链已正常工作。
 
-### V7.0.7 的代表性正式验收
+### V7.0.7 历史基线与 V7.0.8 证据
 
-公开 CHANGELOG 记录的 V7.0.7 验收包括：神秘人攻击、O.R.C. 育母蜘蛛的 Slow 5-Combo / Fast 5-Combo / Fast 3-Combo、代表性冲刺攻击、F8 显示循环、公开 Runtime 冒烟测试，以及玩家式全新安装包测试。完整测试脚本、原始运行日志和私人开发源码不属于这个公开仓库的交付内容。
+公开 CHANGELOG 记录的 V7.0.7 验收包括：神秘人攻击、O.R.C. 育母蜘蛛的 Slow 5-Combo / Fast 5-Combo / Fast 3-Combo、代表性冲刺攻击、F8 显示循环、公开 Runtime 冒烟测试，以及玩家式全新安装包测试。V7.0.8 则保留原 SDK 校验及 57 个 UE4SS 导入、4 个公开导出，并核对预测源码只存在预期显示接入差异；实机日志记录启动和战斗绘制/清理，用户确认实际画面正常。最终包解压与无旧目录的原生宿主检查通过，额外的正式精简包干净安装实测仍单独标记。完整脚本、原始日志和私人源码不在本仓库公开。
 
 ## 11. 工程边界与当前没有实现的事项
 
@@ -459,7 +491,7 @@ Runtime 根本没有准入有效威胁  /  画面没有 QTE
 - **不替代游戏规则：** 真正的 Perfect Block 仍由 Grounded 2 判定。
 - **不要求每个动画都有 QTE：** `NO_CUE`、不可格挡和明确延期处理的特殊攻击具有不同语义。
 - **不宣称客机已经完整支持：** 多人 Client / Guest 的可靠攻击目标判定仍是当前限制。
-- **不宣称攻击数据已经外置：** 目前已有按语义和攻击类型进行路由的设计，但把全部攻击记录从编译后的 C++ 中拆成独立数据文件，仍是未来可能的重构方向，并非 V7.0.7 已完成能力。
+- **不宣称攻击数据已经外置：** 目前已有按语义和攻击类型进行路由的设计，但把全部攻击记录从编译后的 C++ 中拆成独立数据文件，仍是未来可能的重构方向，并非 V7.0.8 已完成能力。
 - **不将图示当作公开源码：** 本文流程图与文字用于解释系统职责，不是未公开生产源码的逐行引用。
 
 ## 12. 工程总结
@@ -475,7 +507,7 @@ PBT 最重要的工程变化，是不再把问题简单理解为“给每种虫�
 - [Project README — public architecture and product behavior](https://github.com/Dio23366/PerfectBlockTrainer-Releases/blob/main/README.md)
 - [Project CHANGELOG — published version changes and acceptance results](https://github.com/Dio23366/PerfectBlockTrainer-Releases/blob/main/CHANGELOG.md)
 - [V7.0.7 public releases](https://github.com/Dio23366/PerfectBlockTrainer-Releases/releases)
-- [Gameplay demo — actual in-game behavior](https://youtu.be/ae4_FEjTbQI)
+- [Gameplay demo — actual in-game behavior](https://www.youtube.com/watch?v=FDF9kzwFmH4)
 - [Nexus Mods — release distribution and player-facing notes](https://www.nexusmods.com/grounded2/mods/198)
 
 **Repository placement / 上传路径：** `docs/TECHNICAL_DESIGN.md`  

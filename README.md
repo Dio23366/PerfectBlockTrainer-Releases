@@ -18,7 +18,7 @@
   &nbsp;•&nbsp;
   <a href="https://www.nexusmods.com/grounded2/mods/198"><b>Nexus Mods</b></a>
   &nbsp;•&nbsp;
-  <a href="https://youtu.be/ae4_FEjTbQI"><b>Gameplay Demo</b></a>
+  <a href="https://www.youtube.com/watch?v=FDF9kzwFmH4"><b>Gameplay Demo</b></a>
   &nbsp;•&nbsp;
   <a href="INSTALL.md"><b>Installation Guide</b></a>
 </p>
@@ -48,13 +48,14 @@ PerfectBlockTrainer 从一个真实玩家问题出发：复杂战斗中的完美
 
 ### Public release & usage / 公开发布与使用情况
 
-- **Stable Public Release:** V7.0.7
-- **496 Unique Downloads** on Nexus Mods
-- **749 Total Downloads** on Nexus Mods
-- **3,375 Nexus Views**
-- **7 Endorsements**
-- **10,000+ cumulative views** across public Bilibili videos
-- **7 public iteration rounds** after the initial V7.0 release
+- **Current Public Build:** V7.0.8 — native QTE architecture (available on [Nexus Mods](https://www.nexusmods.com/grounded2/mods/198))
+- **Nexus distribution snapshot:** figures below are from the screenshot supplied on October 29, 2026; they are a dated snapshot, not live counters.
+- **574 Unique Downloads** on Nexus Mods
+- **863 Total Downloads** on Nexus Mods
+- **4,189 Nexus Views**
+- **10 Endorsements**
+- **10,000+ cumulative views** across public Bilibili videos (historical October 9, 2026 snapshot)
+- Continuous public iteration from V7.0 through V7.0.8
 - Real-user feedback covering performance, compatibility, installation, attack coverage, multiplayer behavior, and UX
 
 > Nexus download and view counts reflect public distribution and discovery activity. They are not treated as DAU, retention, or active-user metrics.
@@ -66,16 +67,16 @@ PerfectBlockTrainer 从一个真实玩家问题出发：复杂战斗中的完美
 
 ## In-Game Preview / 实机效果
 
-The following screenshots show PerfectBlockTrainer running in Grounded 2.
+The following historical screenshots show PerfectBlockTrainer running in Grounded 2. They illustrate combat scenarios from earlier releases, not the exact V7.0.8 renderer appearance.
 
-以下截图展示 PerfectBlockTrainer 在《Grounded 2》中的实际运行画面。
+以下历史截图保留此前版本的实战案例，不将旧 UI 画面标注为 V7.0.8 原生渲染器截图。
 
 | Perfect Block Timing / 单次格挡时机 | Multi-Threat Handling / 多威胁处理 | Dynamic Contact Prediction / 动态接触预测 |
 | :---: | :---: | :---: |
 | <img src="media/combat_single.png" width="100%"> | <img src="media/multi_threat.png" width="100%"> | <img src="media/dynamic_prediction.png" width="100%"> |
 | Real-time Perfect Block timing guidance. | Multiple incoming threats and timing relationships. | Dynamic contact prediction for moving-body and projectile attacks. |
 
-For timing, motion, and transitions, watch the [gameplay demo](https://youtu.be/ae4_FEjTbQI).
+For timing, motion, and transitions, watch the [gameplay demo](https://www.youtube.com/watch?v=FDF9kzwFmH4).
 
 *All screenshots are captured from actual PerfectBlockTrainer gameplay in Grounded 2.*
 
@@ -117,32 +118,48 @@ flowchart TD
     J --> K{"Show It Now?<br/>现在应该展示吗？"}
     K -- "No / 否" --> K0["Keep State, Do Not Show Yet<br/>保留状态，暂不展示"]
     K0 -. "Re-check as combat changes / 战斗变化后重新判断" .-> H
-    K -- "Yes / 是" --> L["Update On-screen Cue<br/>更新屏幕提示<br/>Show / Update / Retarget / Clear<br/>FULL / DIM / HIDDEN"]
-    L --> M["QTE Cue<br/>玩家可见提示"]
+    K -- "Yes / 是" --> L["Schedule Visual Windows<br/>安排提示窗口 / 取消 / 清理"]
+    L --> N["Publish Copied QTE Snapshot<br/>发布只读快照<br/>World / Attack / Hit / Timing"]
+    N --> O["Native C++ Drawing Thread<br/>DLL内绘图线程 / GDI+透明窗口"]
+    O --> M["QTE Cue<br/>随攻击显示与清理"]
 ```
 
 The architecture remains deliberately compact: **observe → identify → choose a prediction path → predict contact → validate the threat → track its lifecycle → resolve priority → decide whether to display it**.
 
-V7.0.7 does not replace this architecture. It strengthens several stages inside the same runtime model:
-
-- **Prediction selection and contact timing** now cover more dynamic charge, relative-motion, projectile, FixedContact, and boss-specific cases.
-- **Threat-state tracking** continues to remove stale or invalid cues when attacks are interrupted, cancelled, retargeted, missed, or expired.
-- **Display control** now includes the player-facing `FULL → DIM → HIDDEN → FULL` visibility cycle.
+V7.0.8 preserves the established prediction, threat-admission, lifecycle, arbitration and scheduling core, while replacing its presentation dependency. The final renderer is native C++ inside the PBT DLL, not a UE Widget/LogicMods asset and not a companion executable.
 
 **中文理解**
 
-V7.0.7 并没有把 PBT 重构成另一套系统，而是在原有架构里继续增强预测、威胁状态和显示控制：
+V7.0.7 主要在既有框架内扩展覆盖与动态预测；V7.0.8 则将预测核心与具体显示实现进一步解耦。核心负责“何时、对谁、展示哪种窗口”，快照接口传递值，绘图线程负责“怎样画出来”。迁移显示层没有重新设计攻击时序算法。
 
-- 先从游戏 Runtime 中获取事实；
-- 识别当前到底是哪一次攻击；
-- 根据攻击类型选择合适的预测方法；
-- 预测可能的接触时机；
-- 判断它是否真的构成当前玩家威胁；
-- 持续跟踪攻击是否被打断、取消、切目标或过期；
-- 多个威胁同时成立时决定优先级；
-- 最后再决定是否更新玩家屏幕上的 QTE。
+---
 
-这也是 V7.0.6 到 V7.0.7 的真实演进方式：**核心架构保持稳定，能力在内部逐步增强。**
+## V7.0.8 Architecture Migration / 架构迁移
+
+The engine update exposed a dependency boundary: the C++ predictor and the old UE5.6 presentation assets had different compatibility risks. Replacing timing rules to work around broken UI would have coupled unrelated responsibilities.
+
+```text
+V7.0.7: C++ prediction / arbitration / scheduling
+        → UE Widget + materials + LogicMods → QTE
+
+V7.0.8: C++ prediction / arbitration / scheduling
+        → versioned copied QTE snapshot → native UI thread → GDI+ transparent window
+```
+
+- **Core retained:** attack identity, per-hit timing, dynamic correction, threat admission, arbitration and cancellation remain in the established C++ core.
+- **Explicit data boundary:** version/size, sequence, world generation, attack generation, hit identity, assigned windows, pointer phase and cue semantics travel as copied values. The renderer does not dereference Unreal objects or estimate another contact time.
+- **Thread boundary:** publication uses a bounded snapshot and consistency stamp; the consumer discards partial copies and rejects stale or unbound state. Game time remains authoritative; the UI does not freely extrapolate combat time through pauses.
+- **Native output:** a dedicated thread in the same DLL draws the white ring, hollow frames and Bézier pointer. Startup happens from a viewport callback, not `DllMain`; shutdown signals the worker, which retains its module until cleanup completes.
+- **Lifecycle included:** world/local-player invalidation, attack cancellation, stale publication and finished windows affect visibility. Startup preview waits for valid data, pauses across loading gaps, and yields to real combat cues.
+- **Deployment result:** one mod folder, no old LogicMods, no companion EXE, no bundled .NET. The final ZIP is **223,237 bytes (about 218 KiB)**.
+
+A C# companion was an intermediate UI implementation used during the migration. Its self-contained package was about 66.9 MiB; most of that was runtime dependencies. The final native DLL is 512,512 bytes, slightly larger than the earlier C++ core because it now includes drawing. Package shrinkage is a dependency reduction, not an FPS benchmark.
+
+**中文说明**
+
+这次迁移改变的是预测结果与显示实现之间的边界：保留成熟的 C++ 核心，以有版本与代次信息的快照连接原生绘图线程，不再依赖 UE5.6 的 Widget、材质和 LogicMods。C# 独立圆环是中间验证方案，最终公开版已经移除伴随 EXE 与 .NET。
+
+显示解耦并不等于取消生命周期管理：快照一致性、世界/攻击代次、数据过期、攻击结束以及线程退出都需要有明确处理。绘图后端消费核心已经决定的窗口，不另算一套预测。窗口仍独立于游戏的渲染画面，因此 OBS 游戏采集未必包含圆环。
 
 ---
 
@@ -161,7 +178,7 @@ The README uses action-oriented names first. The original technical terms are ke
 | **Is It a Real Threat? / 是否真的构成威胁** *(Threat Admission)* | Decide whether a prediction is actually relevant to the current player：即使能算出时间，也要确认攻击来源、目标关系、攻击状态和物理关系仍然成立。 |
 | **Track Current Threat State / 跟踪当前威胁状态** *(Lifecycle / Authority)* | Keep only current, legitimate threat state：处理打断、击晕、击杀、取消、切目标、Miss、过期，并防止旧状态重新覆盖已经更新的威胁。 |
 | **Choose Which Threat Comes First / 决定先处理哪个威胁** *(Arbitration)* | When several threats are valid at once, decide which ones deserve limited UI attention first：依据接触时间、优先级和稳定性规则选择展示顺序。 |
-| **Update On-screen Cue / 更新屏幕提示** *(Scheduler / Display Control)* | Turn changing threat state into stable UI actions：决定什么时候显示、更新、切换、保持或清除提示，并在 V7.0.7 中支持 `FULL / DIM / HIDDEN` 显示状态。 |
+| **Update On-screen Cue / 更新屏幕提示** *(Scheduler / Display Control)* | Turn current threat state into assigned visual windows：决定何时显示、更新或清理，发布给独立原生绘图后端；当前版本按攻击自动显示，不再提供 F8 模式循环。 |
 
 Current production prediction families include:
 
@@ -393,8 +410,12 @@ Boss & variant coverage / readability / release hardening
 Boss 与变体覆盖、可读性、发布硬化
 ↓
 V7.0.7
-Roster coverage / second-layer dynamic prediction / QTE visibility control
-生物覆盖、二层动态预测与 QTE 显示控制
+Roster coverage / second-layer dynamic prediction / manual visibility control
+生物覆盖、二层动态预测与当时的手动显示控制
+↓
+V7.0.8
+Engine compatibility / snapshot interface / native presentation / smaller deployment
+引擎兼容、快照接口、原生显示与分发精简
 ```
 
 Release priorities evolved roughly as:
@@ -408,13 +429,13 @@ Availability / 可用
 → Release Quality / 发布质量
 ```
 
-V7.0.7 represents a later product stage: the core system is already stable enough that development can expand coverage, improve dynamic prediction, and add user-facing display controls without abandoning the established reliability and release gates.
+V7.0.8 adds a new engineering priority: preserve the established combat core while moving presentation behind a tested data boundary, restoring compatibility and simplifying distribution.
 
 **中文说明**
 
 版本优先级不是固定的。早期首先解决“能不能正常使用”，随后才逐渐转向正确性、复杂场景稳定性、覆盖、UX 和 Release Quality。
 
-到了 V7.0.7，开发重点已经从单纯修复基础可用性，进一步转向当前生物覆盖、复杂动态攻击预测以及玩家可控的 QTE 显示体验，同时继续保持已有的回归与发布质量要求。
+V7.0.7 的覆盖与动态预测积累成为迁移基线；V7.0.8 重点转向跨引擎版本兼容、显示层解耦，以及减少玩家安装依赖。
 
 Detailed per-version feature changes and player-facing patch information are maintained through **Nexus Mods** and **GitHub Releases** rather than duplicated here.
 
@@ -422,48 +443,29 @@ Detailed per-version feature changes and player-facing patch information are mai
 
 ## Reliability & Release Engineering / 可靠性与发布
 
-V7.0.7 completed a dedicated public-runtime and distribution-level acceptance process before release.
+V7.0.8 separates evidence by responsibility rather than treating a successful build as gameplay acceptance.
 
-Representative accepted scenarios include:
+- **Prediction preservation:** the predecessor core was reconstructed with only the intended startup/shutdown and version-label substitutions; other core companion sources remained byte-identical.
+- **ABI/build:** the pinned UE4SS SDK/runtime check was retained; the native build preserved the predecessor's 57 UE4SS imports and four public exports.
+- **Offline behavior:** 15 relevant test groups cover core replay/routing, generation publication, native startup integration, configuration, geometry and lifecycle. Inactive predecessor experiments are not counted as current features.
+- **Renderer comparison:** 160 synthetic snapshots and 120 startup frames were compared with the preceding C# implementation; three raster outputs matched pixel for pixel.
+- **Window lifecycle:** a native test host exercised actual layered-window presentation, stale-data hiding, resizing, 20 restart cycles and nonblocking module cleanup.
+- **Actual gameplay:** runtime logs recorded native startup preview and combat render/clear cycles; the user confirmed normal visible behavior.
+- **Package:** extraction roundtrip, installed payload identity and a legacy-free native-host layout were checked. These checks do not substitute for a full game regression of the final clean package.
 
-- Garden Masked Fighter / Mysterious Stranger attack coverage — **PASS**
-- O.R.C. Broodmother representative attacks — **PASS**
-- O.R.C. Broodmother Slow 5-Combo — **PASS**
-- O.R.C. Broodmother Fast 5-Combo — **PASS**
-- O.R.C. Broodmother Fast 3-Combo — **PASS**
-- Dynamic charge / moving-body prediction — **PASS**
-- Representative projectile and relative-motion prediction — **PASS**
-- F8 QTE visibility cycling: `FULL → DIM → HIDDEN → FULL` — **PASS**
-- Release-package clean-install game test — **PASS**
-- Fresh public runtime smoke test — **PASS**
-- Runtime restored after release validation — **PASS**
-- Fatal error during accepted final release testing — **NO**
-
-The current release also completed the intended QTE adaptation pass for the known creature roster in the tested Grounded 2 version. This does **not** mean every animation should produce a blockable QTE: `NO_CUE`, attacks that are not handled as ordinary Perfect Block attacks, and explicitly deferred special cases remain intentional exceptions.
+**Historical baseline:** V7.0.7's published boss, charge, F8 and clean-install acceptance remains attached to that version in the [changelog](CHANGELOG.md#v707--broader-qte-coverage-dynamic-prediction--visibility-control). It is not relabeled as a fresh UE5.7 full-roster acceptance.
 
 **中文说明**
 
-V7.0.7 的“覆盖完成”指当前已知生物范围内的 QTE 适配主线已经完成，并通过代表性实战验证；它不表示游戏中的每一个动画都必须显示可格挡 QTE。`NO_CUE`、非普通格挡攻击以及明确延期处理的特殊攻击仍属于设计例外。
+编译、离线回放、真实绘图窗口、玩家观察和正式安装包是不同证据层。新版已有原生显示实机反馈，但不能因此自动宣称所有怪物、多人客机、分辨率切换和长期性能全部通过。完整发布包的额外干净安装实测仍保留为独立检查点。
 
 ### Public Release Hardening / 公开版本硬化
 
-The public DLL is built using a dedicated `PUBLIC_RELEASE_HARDENED` configuration.
+Development probes and detailed per-frame diagnostics remain excluded from the public build. Necessary startup/state/error transitions remain available for support; absence of noisy logs is not a substitute for fixing behavior.
 
-Development-only surfaces such as detailed diagnostics, runtime probes, development logging, and development-path exposure are removed while preserving accepted gameplay behavior.
+### Distribution integrity / 分发一致性
 
-**中文说明**
-
-开发环境需要 Probe、详细日志和诊断能力，但玩家版本不应该携带这些开发暴露面。因此 Public Build 会在保留已验收 Gameplay 行为的前提下，移除仅用于开发的诊断、路径和日志信息。
-
-### Clean-install Validation / 全新安装验证
-
-The final public release package itself was used for player-style clean-install testing.
-
-The process intentionally avoided relying on development build artifacts, so the accepted release package and the package distributed to players are the same release unit.
-
-**中文说明**
-
-最终验证使用的就是玩家实际下载到的 Release Package，而不是开发机上额外存在的文件。这样可以避免“开发环境能跑，但正式包缺文件”的发布问题。
+The native package's DLL matches the locally tested candidate. Its activation marker and default configuration are verified after ZIP extraction. The old EXE package is a separate predecessor artifact, with a different identity and dependency set.
 
 ---
 
@@ -512,9 +514,11 @@ PerfectBlockTrainer currently supports multiple production prediction and presen
 - Chronological handling of upcoming multi-hit threats / 多段威胁按接触顺序处理
 - Save / map transition cleanup / 存档与地图切换时的状态清理
 - QTE Ring / Pointer cleanup / QTE Ring 与 Pointer 清理
-- **QTE visibility control: `FULL → DIM → HIDDEN → FULL` / QTE 显示状态切换**
+- **Attack-driven native QTE display and cleanup / 随攻击显示与清理的原生 QTE**
+- **Versioned QTE snapshot interface / 有版本与代次的 QTE 数据快照**
+- **Termite-family melee/explosion cues and Centipede combos, slam and emergence routes / 白蚁家族与蜈蚣新增攻击路线**
 
-Representative current production coverage includes:
+Established prediction routes retained from earlier releases include the following. Their earlier validation is historical evidence, not a claim that every route has been re-tested after the engine migration:
 
 - Multi-enemy and mixed-threat combat
 - Mixed melee and ranged combat
@@ -540,24 +544,18 @@ Representative current production coverage includes:
 
 ## Visual Semantics / 提示语义
 
-PerfectBlockTrainer uses different visual cues depending on attack semantics:
+- **White ring / 白环:** timing-cycle reference; its presence alone does not prove that an attack window is active.
+- **Green hollow frame / 绿色空心框:** the core-assigned recommended Perfect Block window.
+- **Red pointer / 红色指针:** current position in the timing cycle.
+- **Red frame / 红框:** an attack classified as a danger/dodge warning, not simply “high damage.”
+- **GOLD overlap / 金色交集:** the shared time of two blockable windows, supplied by the core. It does not merge attacks or enlarge the game's block window.
+- **No cue / 无提示:** a deliberately excluded or deferred route does not become an ordinary green cue.
 
-- **Green QTE / 绿色 QTE** — Perfect Block opportunity / 存在 Perfect Block 时机
-- **GOLD overlap / 金色重叠区** — shared overlap area of two blockable green Perfect Block windows / 两个独立可格挡窗口的公共重叠区域
-- **Red warning / 红色警告** — Unblockable attack / dodge warning / 不可格挡攻击或闪避警告
-- **No cue / 不显示提示** — attacks that should not produce a Perfect Block prompt / 不应产生 Perfect Block QTE 的攻击
+V7.0.8 uses automatic attack-driven visibility at normal opacity. The V7.0.7 F8 FULL/DIM/HIDDEN cycle is no longer part of the current UI. Frames are hollow with the underlying ring cut away; the red spindle pointer is constructed from Bézier geometry.
 
-Red does **not** mean "hard attack" or "high damage". It specifically means **this attack cannot be Perfect Blocked and should be treated as a dodge / danger warning** in the current product rules.
+Startup preview shows green, red and gold frames immediately with the ring and clears each after the pointer has fully passed. It demonstrates loading and visual language, not validation of any enemy's attack timing.
 
-The GOLD overlap is a readability feature only. It does not change attack timing, Perfect Block window size, or Grounded 2 combat rules.
-
-V7.0.7 also adds player-controlled QTE visibility modes through **F8**:
-
-```text
-FULL → DIM → HIDDEN → FULL
-```
-
-This changes presentation only. Prediction and combat-state tracking continue to run while the UI is dimmed or hidden.
+当前显示语义由核心数据决定，绘图器不根据视觉重叠自行发明金框，也不把启动演示当作实战攻击。
 
 ---
 
@@ -565,7 +563,7 @@ This changes presentation only. Prediction and combat-state tracking continue to
 
 ### Gameplay Demo / 功能演示
 
-▶ **[Watch the PerfectBlockTrainer Gameplay Demo on Bilibili](https://www.bilibili.com/video/BV1wh8R6iESi/)**
+▶ **[Watch the PerfectBlockTrainer V7.0.8 Gameplay Demo on YouTube](https://www.youtube.com/watch?v=FDF9kzwFmH4)**
 
 The long-term gameplay demo is maintained as the product evolves. Current showcase topics include:
 
@@ -576,99 +574,49 @@ The long-term gameplay demo is maintained as the product evolves. Current showca
 - Unblockable attack warnings
 - Dynamic charge attack prediction
 - Multi-threat QTE readability
-- QTE visibility control: `FULL · DIM · HIDDEN`
 
 ### Installation Video / 安装视频
 
 ▶ **[PerfectBlockTrainer Complete Installation Guide](https://www.bilibili.com/video/BV1ws4R6fEYL/)**
 
-The installation video was originally recorded for an earlier V7 release, but the core installation flow remains applicable to V7.0.7 when using **UE4SS_Grounded2 1.0.4**.
+This is a historical installation video. Its LogicMods and mods.txt steps do not describe the native V7.0.8 package. Use the current [INSTALL.md](INSTALL.md) for installation.
 
 ---
 
 ## Requirements / 依赖
 
-PerfectBlockTrainer V7.0.7 requires:
+- Grounded 2 **UE5.7.4**, Windows x64.
+- The tested **UE4SS_Grounded2 1.0.6** distribution.
+- The native V7.0.8 PBT package.
 
-1. **Grounded 2**
-2. **UE4SS_Grounded2 1.0.4**
-
-Required entries in `mods.txt`:
-
-```text
-BPML_GenericFunctions : 1
-BPModLoaderMod : 1
-PerfectBlockTrainerCpp : 1
-```
-
-No additional gameplay mod is required.
-
-`BPML_GenericFunctions` and `BPModLoaderMod` are part of the supported UE4SS_Grounded2 setup and support Blueprint UI creation, update, and cleanup.
+The renderer uses Windows GDI+ and the native C++ runtime. No separate .NET installation, companion EXE, or old PBT LogicMods is required. PBT activates through its own empty `enabled.txt`; no PBT enable line needs to be added to `mods.txt`. Keep other mods and loader configuration intact.
 
 ---
 
 ## Installation / 安装
 
-Download the current release from:
-
-- **[Nexus Mods — PerfectBlockTrainer](https://www.nexusmods.com/grounded2/mods/198)**
-- **[GitHub Releases — PerfectBlockTrainer](https://github.com/Dio23366/PerfectBlockTrainer-Releases/releases)**
-
-Then follow:
-
-**[INSTALL.md](INSTALL.md)**
-
-Current release package:
+Get the current V7.0.8 native package from [Nexus Mods](https://www.nexusmods.com/grounded2/mods/198), then follow [INSTALL.md](INSTALL.md). The [GitHub Releases](https://github.com/Dio23366/PerfectBlockTrainer-Releases/releases) archive retains earlier versions; do not confuse the latest existing V7.0.7 GitHub asset with the V7.0.8 native build.
 
 ```text
-PerfectBlockTrainer_V7.0.7_RELEASE.zip
-```
-
-Package structure:
-
-```text
-PerfectBlockTrainer_V7.0.7_RELEASE/
+PerfectBlockTrainer_V7.0.8_RELEASE/
 ├─ Mods/
 │  └─ PerfectBlockTrainerCpp/
-│     └─ dlls/
-│        └─ main.dll
-│
-├─ LogicMods/
-│  ├─ PerfectBlockTrainer.pak
-│  ├─ PerfectBlockTrainer.ucas
-│  └─ PerfectBlockTrainer.utoc
-│
+│     ├─ enabled.txt
+│     ├─ config.default.json
+│     └─ dlls/main.dll
 ├─ INSTALL.txt
-├─ VERSION.txt
 ├─ RELEASE_NOTES.md
-└─ RELEASE_MANIFEST_SHA256.tsv
+├─ VERSION.txt
+└─ 第三方许可_THIRD_PARTY_NOTICES.txt
 ```
 
-Validated installation flow:
-
-```text
-Install UE4SS_Grounded2 1.0.4
-↓
-Launch Grounded 2 once to verify UE4SS
-↓
-Install PerfectBlockTrainerCpp
-↓
-Install all three PerfectBlockTrainer LogicMods files
-↓
-Enable PerfectBlockTrainerCpp in mods.txt
-↓
-Launch Grounded 2
-↓
-Enter a save
-↓
-Test Ring / Pointer / QTE
-```
+Upgrading requires removing the three old PBT LogicMods files. Users of the intermediate EXE build also remove `PBTQteAutoStart` after backing up/migrating personal configuration. Exact steps are in the installation guide; other mods are preserved.
 
 ---
 
 ## Known Limitations / 当前限制
 
-V7.0.7 completed the current known-creature QTE adaptation pass for the tested Grounded 2 version, but the product still keeps explicit behavior boundaries.
+V7.0.8 retains established prediction routes and adds autumn-update attacks; this does not establish exhaustive coverage of the new game version.
 
 Current limitations include:
 
@@ -677,12 +625,15 @@ Current limitations include:
 - Explicitly deferred special attacks may still require dedicated runtime validation
 - Different attacks from the same enemy can use different prediction paths and semantics
 - Multiplayer validation remains primarily **host-side**; full guest/client QTE support is not yet implemented
+- Centipede roaming/sprint head-contact cues are deferred; ordinary combo, slam and emergence support does not imply roaming prediction
+- Swarm/harvest performance spikes, frame-generation-related resolution crashes and the broad multiplayer/window-mode matrix remain separate open investigations
+- A native transparent window can still be omitted by OBS Game Capture; Display Capture can include it
 - Future Grounded 2 updates may change runtime behavior or hooks and may require compatibility fixes
 - PerfectBlockTrainer is a training / visualization product and does not change the game's actual Perfect Block rules
 
 **中文说明**
 
-V7.0.7 已完成当前测试版本已知生物范围内的 QTE 适配主线，但这不等于“每一个动画都应该出现绿色 QTE”。
+V7.0.8 保留已有预测路线并增加秋季更新攻击，但不能据此宣称新版游戏的每一种招式都已重新验证。
 
 `NO_CUE`、非普通格挡攻击、明确延期处理的特殊攻击，以及尚未完成的多人客机 QTE，都属于当前明确的产品边界。
 
@@ -732,31 +683,11 @@ Different attacks from the same creature are useful to report separately.
 
 ## Release Integrity / 发布校验
 
-Only packages distributed through the official PerfectBlockTrainer channels should be considered official builds.
+Use the official [Nexus Mods page](https://www.nexusmods.com/grounded2/mods/198) for the current native build and [GitHub Releases](https://github.com/Dio23366/PerfectBlockTrainer-Releases/releases) for the release archive.
 
-### PerfectBlockTrainer V7.0.7 Release ZIP
+The V7.0.8 native ZIP contains one mod directory and no nested EXE/runtime payload. Version labels alone do not identify the intermediate C# package and the final native package; their contents differ substantially.
 
-```text
-PerfectBlockTrainer_V7.0.7_RELEASE.zip
-
-SHA256
-1822BFF8A389EBD14BF11AAD287710FE96C68383AFC9FEA0291AA6A981E8A4E9
-```
-
-### PerfectBlockTrainer V7.0.7 Runtime DLL
-
-```text
-main.dll
-
-SHA256
-64236917A2B0805321EA50DCA6167177FB039ECBE57FC0764E15B08E58215D95
-```
-
-Modified or redistributed builds with different identities should be treated as **unofficial builds**.
-
-The release ZIP SHA256 is the package-level identity. The release package also contains `RELEASE_MANIFEST_SHA256.tsv` for its packaged file manifest.
-
-See [`SHA256SUMS.txt`](SHA256SUMS.txt) for the public release hash list.
+The existing [SHA256SUMS.txt](SHA256SUMS.txt) explicitly identifies the historical V7.0.7 build. V7.0.8 does not add a player-facing checksum manifest to its package. Historical release identities are preserved rather than presented as current ones.
 
 ---
 
@@ -794,7 +725,7 @@ Development source code, internal runtime evidence, development probes, build ar
 - **Nexus Mods:** [PerfectBlockTrainer](https://www.nexusmods.com/grounded2/mods/198)
 - **GitHub Public Repository:** [PerfectBlockTrainer-Releases](https://github.com/Dio23366/PerfectBlockTrainer-Releases)
 - **GitHub Releases:** [PerfectBlockTrainer Releases](https://github.com/Dio23366/PerfectBlockTrainer-Releases/releases)
-- **Gameplay Demo:** [BV1wh8R6iESi](https://www.bilibili.com/video/BV1wh8R6iESi/)
+- **Gameplay Demo:** [V7.0.8 on YouTube](https://www.youtube.com/watch?v=FDF9kzwFmH4)
 - **Installation Video:** [BV1ws4R6fEYL](https://www.bilibili.com/video/BV1ws4R6fEYL/)
 - **Bilibili Creator Page:** [bili_55415870362](https://space.bilibili.com/3546748811217856)
 
@@ -812,15 +743,16 @@ Grounded 2 is developed by **Obsidian Entertainment** and published by **Xbox Ga
 
 ## Version / 当前版本
 
-**V7.0.7 — Stable Public Release**
+**V7.0.8 — Native QTE Architecture / 原生 QTE 架构**
 
 Current public runtime:
 
-**UE4SS_Grounded2 1.0.4**
+**Grounded 2 UE5.7.4 · UE4SS_Grounded2 1.0.6**
 
 Previous public releases:
 
 ```text
+V7.0.7 — Broader Coverage, Second-layer Dynamic Prediction & Manual Visibility
 V7.0.6 — Expanded Combat Coverage & Boss Timing Improvements
 V7.0.5 — Combat Targeting & QTE Stability Improvements
 V7.0.4 — Combat Reliability & Mixed-Threat Improvements

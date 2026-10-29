@@ -1,906 +1,195 @@
-# PerfectBlockTrainer V7.0.7
+# PerfectBlockTrainer V7.0.8 — Native QTE Installation
 
-**Installation Guide / 安装指南**
+[Project technical overview](README.md) · [Nexus download](https://www.nexusmods.com/grounded2/mods/198)
+
+PerfectBlockTrainer V7.0.8 — Native QTE
+INSTALLATION / 安装说明
+
+IMPORTANT: REMOVE OLD PBT FILES BEFORE UPGRADING / 升级前先移除旧文件
+
+中文版
+安装过7.0.7或更早版本：保存并退出游戏，备份后移除
+Grounded2\Augusta\Content\Paks\LogicMods 中的这三个旧PBT文件：
+- `PerfectBlockTrainer.pak`
+- `PerfectBlockTrainer.ucas`
+- `PerfectBlockTrainer.utoc`
+只移除这三个文件，不要删除整个LogicMods文件夹或其他模组。
+
+安装过早期“独立EXE圆环版”7.0.8：退出游戏并确认PbtOverlay已退出，
+将 ue4ss\Mods\PBTQteAutoStart 文件夹备份到游戏目录之外，再从Mods移除。
+如修改过其中 overlay\config.json，请先保存，安装后复制为
+ue4ss\Mods\PerfectBlockTrainerCpp\config.json。没有自定义配置可跳过。
+新版使用游戏进程内的原生绘图，不再需要这个旧启动模组或其.NET文件。
+不要移除其他模组的文件，也不要卸载其他程序使用的.NET。
+
+## English
+Upgrading from7.0.7 or earlier:save and close the game,back up and remove ONLY:
+Grounded2\Augusta\Content\Paks\LogicMods\PerfectBlockTrainer.pak
+Grounded2\Augusta\Content\Paks\LogicMods\PerfectBlockTrainer.ucas
+Grounded2\Augusta\Content\Paks\LogicMods\PerfectBlockTrainer.utoc
+Keep the LogicMods folder and all unrelated mods.
+
+Upgrading from the earlier7.0.8 standalone-EXE renderer:close the game and
+PbtOverlay.Back up ue4ss\Mods\PBTQteAutoStart outside the game,then remove
+that old mod folder.If you customized overlay\config.json,save it and copy
+it to ue4ss\Mods\PerfectBlockTrainerCpp\config.json after installing.
+The native version no longer needs that companion or its bundled .NET files.
+Do not remove other mods or uninstall .NET used by other applications.
 
 ---
-
-# Part I — English
-
-## 1. Before You Start
-
-You need:
-
-1. **Grounded 2**
-2. **UE4SS_Grounded2 1.0.4**
-3. **PerfectBlockTrainer V7.0.7**
-
-## 2. Find the Grounded 2 Installation Folder
-
-In Steam:
-
-**Grounded 2 → Properties → Installed Files → Browse**
-
-The game folder should look similar to:
-
-```text
-Grounded2
-├─ Augusta
-├─ Engine
-└─ Grounded2.exe
-```
-
-All paths below start from this `Grounded2` folder.
-
-## 3. Install UE4SS_Grounded2 1.0.4
-
-Open:
-
-```text
-Grounded2\Augusta\Binaries\Win64
-```
-
-Extract **UE4SS_Grounded2 1.0.4**.
-
-Copy:
-
-```text
-ue4ss
-dwmapi.dll
-```
-
-into:
-
-```text
-Grounded2\Augusta\Binaries\Win64
-```
-
-The result should look similar to:
-
-```text
-Win64
-├─ Grounded2Steam-Win64-Shipping.exe
-├─ dwmapi.dll
-└─ ue4ss
-```
-
-## 4. First Launch — Verify UE4SS
-
-At this point, **do not install PerfectBlockTrainer yet**.
-
-Launch **Grounded 2** and confirm that the game can reach the main menu normally.
-
-Then completely exit the game.
-
-## 5. Install PerfectBlockTrainerCpp
-
-Extract:
-
-```text
-PerfectBlockTrainer_V7.0.7_RELEASE.zip
-```
-
-Open:
-
-```text
-Mods
-```
-
-Copy the entire:
-
-```text
-PerfectBlockTrainerCpp
-```
-
-folder into:
-
-```text
-Grounded2\Augusta\Binaries\Win64\ue4ss\Mods
-```
-
-The final path must be:
-
-```text
-Grounded2\Augusta\Binaries\Win64\ue4ss\Mods\PerfectBlockTrainerCpp\dlls\main.dll
-```
-
-### Correct
-
-```text
-PerfectBlockTrainerCpp
-└─ dlls
-   └─ main.dll
-```
-
-### Wrong
-
-```text
-PerfectBlockTrainerCpp
-└─ PerfectBlockTrainerCpp
-   └─ dlls
-      └─ main.dll
-```
-
-If you see two `PerfectBlockTrainerCpp` folders nested inside each other, the folder was copied one level too deep.
-
-## 6. Install LogicMods
-
-The release contains:
-
-```text
-LogicMods
-├─ PerfectBlockTrainer.pak
-├─ PerfectBlockTrainer.ucas
-└─ PerfectBlockTrainer.utoc
-```
-
-Target location:
-
-```text
-Grounded2\Augusta\Content\Paks\LogicMods
-```
-
-If `LogicMods` does not already exist, copy the entire `LogicMods` folder from the release into:
-
-```text
-Grounded2\Augusta\Content\Paks
-```
-
-If `LogicMods` already exists, open the existing folder and copy these three files into it:
-
-```text
-PerfectBlockTrainer.pak
-PerfectBlockTrainer.ucas
-PerfectBlockTrainer.utoc
-```
-
-The final structure must be:
-
-```text
-Grounded2
-└─ Augusta
-   └─ Content
-      └─ Paks
-         └─ LogicMods
-            ├─ PerfectBlockTrainer.pak
-            ├─ PerfectBlockTrainer.ucas
-            └─ PerfectBlockTrainer.utoc
-```
-
-> All three files must be installed together.
-
-## 7. Install & Enable PerfectBlockTrainerCpp
-
-Open:
-
-```text
-Grounded2\Augusta\Binaries\Win64\ue4ss\Mods\mods.txt
-```
-
-Confirm:
-
-```text
-BPML_GenericFunctions : 1
-BPModLoaderMod : 1
-```
-
-Then add or confirm:
-
-```text
-PerfectBlockTrainerCpp : 1
-```
-
-Place it above:
-
-```text
-; Built-in keybinds, do not move up!
-```
-
-Example:
-
-```text
-BPML_GenericFunctions : 1
-BPModLoaderMod : 1
-jsbLuaProfilerMod : 0
-PerfectBlockTrainerCpp : 1
-
-; Built-in keybinds, do not move up!
-Keybinds : 1
-```
-
-> Other entries in `mods.txt` may be different on your installation.  
-> Do not copy the example line-for-line and do not change unrelated mods.
-
-Save `mods.txt`.
-
-## 8. Second Launch — Test PerfectBlockTrainer
-
-Launch **Grounded 2**.
-
-Enter a save.
-
-Find a normal melee enemy and let it attack you.
-
-A successful installation should show:
-
-```text
-Enemy prepares to attack
-↓
-QTE appears
-↓
-Ring appears
-↓
-Pointer moves
-↓
-Perfect Block timing is displayed
-↓
-UI disappears after the attack ends
-```
-
-If this works, installation is complete.
-
-### QTE Visibility Hotkey
-
-V7.0.7 adds an F8 display-mode switch:
-
-```text
-FULL → DIM → HIDDEN → FULL
-```
-
-- `FULL` — normal QTE display
-- `DIM` — reduced QTE visibility
-- `HIDDEN` — QTE UI hidden
-
-This changes presentation only. Prediction and threat tracking continue to run while the UI is dimmed or hidden.
-
-## 9. Troubleshooting
-
-### Game Does Not Start
-
-If the game cannot reach the main menu after installing UE4SS but before installing PerfectBlockTrainer, check the **UE4SS_Grounded2 1.0.4** installation first.
-
-### PerfectBlockTrainer Does Not Appear
-
-Check:
-
-```text
-Grounded2\Augusta\Binaries\Win64\ue4ss\Mods\PerfectBlockTrainerCpp\dlls\main.dll
-```
-
-Then confirm in `mods.txt`:
-
-```text
-PerfectBlockTrainerCpp : 1
-```
-
-### No Ring or QTE
-
-Check that all three files exist in:
-
-```text
-Grounded2\Augusta\Content\Paks\LogicMods
-```
-
-```text
-PerfectBlockTrainer.pak
-PerfectBlockTrainer.ucas
-PerfectBlockTrainer.utoc
-```
-
-Then confirm:
-
-```text
-BPML_GenericFunctions : 1
-BPModLoaderMod : 1
-PerfectBlockTrainerCpp : 1
-```
-
-### Wrong Folder Structure
-
-Wrong:
-
-```text
-...\Mods\PerfectBlockTrainerCpp\PerfectBlockTrainerCpp\dlls\main.dll
-```
-
-Correct:
-
-```text
-...\Mods\PerfectBlockTrainerCpp\dlls\main.dll
-```
-
-## 10. Update from an Older Version
-
-Completely exit **Grounded 2** before updating.
-
-### Updating from V7.0.6
-
-V7.0.7 expands the current creature / boss QTE adaptation coverage, improves second-layer dynamic prediction for moving threats, adds Garden Masked Fighter and O.R.C. Broodmother coverage, and adds F8 QTE visibility control.
-
-For the safest update, replace the current PerfectBlockTrainer files with the files from the V7.0.7 release package.
-
-Replace the old:
-
-```text
-Grounded2\Augusta\Binaries\Win64\ue4ss\Mods\PerfectBlockTrainerCpp
-```
-
-with the V7.0.7 `PerfectBlockTrainerCpp` folder.
-
-Then replace all three PerfectBlockTrainer LogicMods files in:
-
-```text
-Grounded2\Augusta\Content\Paks\LogicMods
-```
-
-with the files from the V7.0.7 release package:
-
-```text
-PerfectBlockTrainer.pak
-PerfectBlockTrainer.ucas
-PerfectBlockTrainer.utoc
-```
-
-Finally, confirm:
-
-```text
-BPML_GenericFunctions : 1
-BPModLoaderMod : 1
-PerfectBlockTrainerCpp : 1
-```
-
-### Updating from V7.0.5 or Earlier Public Releases
-
-A full PerfectBlockTrainer file replacement is recommended.
-
-Replace the old `PerfectBlockTrainerCpp` folder with the V7.0.7 version and replace all three PerfectBlockTrainer LogicMods files together.
-
-Do not mix LogicMods files from different release packages.
-
-Then confirm:
-
-```text
-BPML_GenericFunctions : 1
-BPModLoaderMod : 1
-PerfectBlockTrainerCpp : 1
-```
-
-### Updating from an Older Development / Test Build
-
-For a development or test build, a clean PerfectBlockTrainer reinstall is recommended.
-
-Completely exit **Grounded 2**, remove the old:
-
-```text
-Grounded2\Augusta\Binaries\Win64\ue4ss\Mods\PerfectBlockTrainerCpp
-```
-
-and remove the old PerfectBlockTrainer LogicMods files:
-
-```text
-Grounded2\Augusta\Content\Paks\LogicMods\PerfectBlockTrainer.pak
-Grounded2\Augusta\Content\Paks\LogicMods\PerfectBlockTrainer.ucas
-Grounded2\Augusta\Content\Paks\LogicMods\PerfectBlockTrainer.utoc
-```
-
-Then install V7.0.7 again using Sections 5–7 above.
-
-## 11. Uninstall
-
-Completely exit **Grounded 2**.
-
-Delete:
-
-```text
-Grounded2\Augusta\Binaries\Win64\ue4ss\Mods\PerfectBlockTrainerCpp
-```
-
-Then delete:
-
-```text
-Grounded2\Augusta\Content\Paks\LogicMods\PerfectBlockTrainer.pak
-Grounded2\Augusta\Content\Paks\LogicMods\PerfectBlockTrainer.ucas
-Grounded2\Augusta\Content\Paks\LogicMods\PerfectBlockTrainer.utoc
-```
-
-Then remove or disable the `PerfectBlockTrainerCpp` entry in `mods.txt`.
-
-Do not delete files belonging to other mods.
-
-## 12. Official V7.0.7 Release Identity
-
-Release package:
-
-```text
-PerfectBlockTrainer_V7.0.7_RELEASE.zip
-```
-
-SHA256:
-
-```text
-1822BFF8A389EBD14BF11AAD287710FE96C68383AFC9FEA0291AA6A981E8A4E9
-```
-
-Runtime DLL:
-
-```text
-main.dll
-```
-
-SHA256:
-
-```text
-64236917A2B0805321EA50DCA6167177FB039ECBE57FC0764E15B08E58215D95
-```
-
-Only packages distributed through the official PerfectBlockTrainer channels should be considered official builds.
-
-## 13. Final Checklist
-
-- [ ] UE4SS_Grounded2 1.0.4 installed
-- [ ] Game reaches the main menu after UE4SS installation
-- [ ] `PerfectBlockTrainerCpp\dlls\main.dll` is in the correct folder
-- [ ] `PerfectBlockTrainer.pak` installed
-- [ ] `PerfectBlockTrainer.ucas` installed
-- [ ] `PerfectBlockTrainer.utoc` installed
-- [ ] `BPML_GenericFunctions : 1`
-- [ ] `BPModLoaderMod : 1`
-- [ ] `PerfectBlockTrainerCpp : 1`
-- [ ] Save loads normally
-- [ ] QTE appears when an enemy attacks
-- [ ] Ring appears
-- [ ] Pointer moves
-- [ ] UI disappears after the attack ends
+## English
+---
+### 1. Requirements
+Grounded2 UE5.7.4 on Windows x64,plus the tested UE4SS_Grounded2 1.0.6:
+UE4SS_Grounded2 52 1.0.6 2026-10-24T21-32Z V7eYNegQ4.zip
+Install that loader according to its own instructions.This package does not
+include UE4SS.dll,dwmapi.dll or an installer.No separate .NET installation is
+required.PBT uses native Windows drawing and the native C++ runtime used by
+its UE4SS environment.If Windows reports a missing VCRUNTIME140*.dll,use the
+official Microsoft Visual C++2015–2022 Redistributable x64;do not download
+individual DLLs from third-party sites.
+
+### 2. Locate the game
+Steam > Grounded2 > Properties > Installed Files > Browse.
+The game root contains Augusta,Engine and Grounded2.exe.
+Paths in this guide start at that root.
+
+### 3. Prepare UE4SS
+Expected loader layout:
+- `Augusta\Binaries\Win64\dwmapi.dll`
+- `Augusta\Binaries\Win64\ue4ss\UE4SS.dll`
+If the tested loader already works,keep it.Preserve all unrelated mods and
+configuration.Do not replace a different graphics proxy blindly.
+
+### 4. Install PBT
+Save and fully exit the game.Complete the upgrade cleanup above.
+Extract this ZIP.Open PerfectBlockTrainer_V7.0.8_RELEASE\Mods and copy the
+ONE folder PerfectBlockTrainerCpp into:
+- `Grounded2\Augusta\Binaries\Win64\ue4ss\Mods`
+Replace the PBT main.dll when prompted.Do not copy an extra Mods folder
+inside Mods,and do not place the DLL beside the game EXE.
+
+### 5. Confirm these files
+- `ue4ss\Mods\PerfectBlockTrainerCpp\enabled.txt`
+- `ue4ss\Mods\PerfectBlockTrainerCpp\config.default.json`
+- `ue4ss\Mods\PerfectBlockTrainerCpp\dlls\main.dll`
+The empty enabled.txt enables the C++ mod.No manual mods.txt editing or
+PerfectBlockTrainerCpp : 1 line is needed.Keep enabled.txt named exactly;
+Windows may hide known file extensions.Do not overwrite other mods.txt files.
+
+### 6. Start and play
+Launch normally through Steam.The white ring and red pointer show a short
+startup preview with green,red and gold hollow frames.Each frame clears
+after the pointer passes.Combat cues appear automatically for supported
+attacks and clear when finished.No separate QTE application needs starting.
+There is no F8 full/dim/hidden cycle.
+
+### 7. Cue meanings
+White ring:timing reference.Green hollow frame:recommended Perfect Block
+window.Red frame:danger warning;dodge rather than treating it as a normal
+Perfect Block cue.Gold:shared time in overlapping block windows.
+The mod gives timing cues;the player still performs the block or dodge.
+
+### 8. Adjust appearance
+To customize,copy config.default.json to config.json in PerfectBlockTrainerCpp.
+Edit config.json with a text editor and restart the game.Parameters control
+radius,stroke,frame width,pointer size,centerX/centerY and scale.
+Default size is based on1080p height and scales with client height.Keep valid
+positive values;center coordinates are normalized between0 and1.This release
+does not ship a personal config.json,so updates preserve your custom file.
+
+### 9. Recording with OBS
+The ring is a separate transparent window even though its code runs inside
+the game process.Game Capture or Window Capture may omit it.Display Capture
+can include both the game and QTE;preview the recording before a full session.
+
+### 10. If no ring appears
+Check the startup preview and test a supported enemy.Check the exact folder
+layout,enabled.txt and the tested UE4SS version.Close the game before changing
+files.To test defaults,back up and temporarily rename your config.json.
+UE4SS.log contains [PBTCPP][NativeQte] startup/state messages.If that log
+reports an error,include it when requesting help.The old PbtOverlay.exe is
+not required,and running it manually can produce duplicate rings.
+
+### 11. Uninstall or roll back
+Close the game.Back up your custom config,then remove only
+ue4ss\Mods\PerfectBlockTrainerCpp.Leave other mods and UE4SS alone.
+For rollback,restore a complete matching older PBT package and follow its
+instructions;the old EXE version requires its old companion folder too.
+
+### 12. Files and licenses
+INSTALL.txt explains installation.RELEASE_NOTES.md lists changes.VERSION.txt
+identifies the release.第三方许可_THIRD_PARTY_NOTICES.txt contains notices for native components.
 
 ---
-
-# Part II — 中文
-
-## 1. 安装前准备
-
-你需要：
-
-1. **Grounded 2 / 禁闭求生 2**
-2. **UE4SS_Grounded2 1.0.4**
-3. **PerfectBlockTrainer V7.0.7**
-
-## 2. 找到 Grounded 2 安装目录
-
-在 Steam 中：
-
-**Grounded 2 → 属性 → 已安装文件 → 浏览**
-
-打开后应该能看到类似：
-
-```text
-Grounded2
-├─ Augusta
-├─ Engine
-└─ Grounded2.exe
-```
-
-后续所有路径都从这个 `Grounded2` 文件夹开始。
-
-## 3. 安装 UE4SS_Grounded2 1.0.4
-
-进入：
-
-```text
-Grounded2\Augusta\Binaries\Win64
-```
-
-解压 **UE4SS_Grounded2 1.0.4**。
-
-把：
-
-```text
-ue4ss
-dwmapi.dll
-```
-
-复制到：
-
-```text
-Grounded2\Augusta\Binaries\Win64
-```
-
-最终目录应类似：
-
-```text
-Win64
-├─ Grounded2Steam-Win64-Shipping.exe
-├─ dwmapi.dll
-└─ ue4ss
-```
-
-## 4. 第一次启动 — 验证 UE4SS
-
-此时**先不要安装 PerfectBlockTrainer**。
-
-启动 **Grounded 2**，确认游戏可以正常进入主菜单。
-
-然后完全退出游戏。
-
-## 5. 安装 PerfectBlockTrainerCpp
-
-解压：
-
-```text
-PerfectBlockTrainer_V7.0.7_RELEASE.zip
-```
-
-打开：
-
-```text
-Mods
-```
-
-把整个：
-
-```text
-PerfectBlockTrainerCpp
-```
-
-文件夹复制到：
-
-```text
-Grounded2\Augusta\Binaries\Win64\ue4ss\Mods
-```
-
-最终路径必须是：
-
-```text
-Grounded2\Augusta\Binaries\Win64\ue4ss\Mods\PerfectBlockTrainerCpp\dlls\main.dll
-```
-
-### 正确
-
-```text
-PerfectBlockTrainerCpp
-└─ dlls
-   └─ main.dll
-```
-
-### 错误
-
-```text
-PerfectBlockTrainerCpp
-└─ PerfectBlockTrainerCpp
-   └─ dlls
-      └─ main.dll
-```
-
-如果看到两层 `PerfectBlockTrainerCpp`，说明文件夹多套了一层。
-
-## 6. 安装 LogicMods
-
-Release 中有：
-
-```text
-LogicMods
-├─ PerfectBlockTrainer.pak
-├─ PerfectBlockTrainer.ucas
-└─ PerfectBlockTrainer.utoc
-```
-
-目标位置：
-
-```text
-Grounded2\Augusta\Content\Paks\LogicMods
-```
-
-如果 Paks 下还没有 `LogicMods`，把 Release 中整个 `LogicMods` 文件夹复制到：
-
-```text
-Grounded2\Augusta\Content\Paks
-```
-
-如果已经存在 `LogicMods`，打开已有文件夹，只把这三个文件复制进去：
-
-```text
-PerfectBlockTrainer.pak
-PerfectBlockTrainer.ucas
-PerfectBlockTrainer.utoc
-```
-
-最终目录必须是：
-
-```text
-Grounded2
-└─ Augusta
-   └─ Content
-      └─ Paks
-         └─ LogicMods
-            ├─ PerfectBlockTrainer.pak
-            ├─ PerfectBlockTrainer.ucas
-            └─ PerfectBlockTrainer.utoc
-```
-
-> 三个文件必须一起安装。
-
-## 7. 安装并启用 PerfectBlockTrainerCpp
-
-打开：
-
-```text
-Grounded2\Augusta\Binaries\Win64\ue4ss\Mods\mods.txt
-```
-
-确认：
-
-```text
-BPML_GenericFunctions : 1
-BPModLoaderMod : 1
-```
-
-然后新增或确认：
-
-```text
-PerfectBlockTrainerCpp : 1
-```
-
-把它放在：
-
-```text
-; Built-in keybinds, do not move up!
-```
-
-这一行的上面。
-
-例如：
-
-```text
-BPML_GenericFunctions : 1
-BPModLoaderMod : 1
-jsbLuaProfilerMod : 0
-PerfectBlockTrainerCpp : 1
-
-; Built-in keybinds, do not move up!
-Keybinds : 1
-```
-
-> 不同玩家的 `mods.txt` 中其他内容可能不同。  
-> 不要整段照抄示例，也不要修改与 PerfectBlockTrainer 无关的其他 Mod。
-
-保存 `mods.txt`。
-
-## 8. 第二次启动 — 测试 PerfectBlockTrainer
-
-启动 **Grounded 2**。
-
-进入一个存档。
-
-找一个普通近战敌人，让它主动攻击你。
-
-正确安装后应该看到：
-
-```text
-敌人准备攻击
-↓
-QTE 出现
-↓
-Ring 显示
-↓
-Pointer 运动
-↓
-显示完美格挡时机
-↓
-攻击结束后 UI 消失
-```
-
-如果这一整套流程正常，说明安装完成。
-
-
-### QTE 显示模式热键
-
-V7.0.7 新增 F8 显示模式切换：
-
-```text
-FULL → DIM → HIDDEN → FULL
-```
-
-- `FULL` — 正常显示 QTE
-- `DIM` — 降低 QTE 可见度
-- `HIDDEN` — 隐藏 QTE UI
-
-该功能只改变显示状态。即使 UI 处于 DIM 或 HIDDEN，攻击预测与威胁状态跟踪仍会继续运行。
-
-## 9. 常见问题
-
-### 游戏无法启动
-
-如果只安装 UE4SS、还没有安装 PerfectBlockTrainer 时，游戏就已经无法进入主菜单，请先检查 **UE4SS_Grounded2 1.0.4** 的安装。
-
-### PerfectBlockTrainer 没有出现
-
-检查：
-
-```text
-Grounded2\Augusta\Binaries\Win64\ue4ss\Mods\PerfectBlockTrainerCpp\dlls\main.dll
-```
-
-然后确认：
-
-```text
-PerfectBlockTrainerCpp : 1
-```
-
-### 没有 Ring 或 QTE
-
-检查：
-
-```text
-Grounded2\Augusta\Content\Paks\LogicMods
-```
-
-里面是否同时存在：
-
-```text
-PerfectBlockTrainer.pak
-PerfectBlockTrainer.ucas
-PerfectBlockTrainer.utoc
-```
-
-然后确认：
-
-```text
-BPML_GenericFunctions : 1
-BPModLoaderMod : 1
-PerfectBlockTrainerCpp : 1
-```
-
-### 文件夹多套了一层
-
-错误：
-
-```text
-...\Mods\PerfectBlockTrainerCpp\PerfectBlockTrainerCpp\dlls\main.dll
-```
-
-正确：
-
-```text
-...\Mods\PerfectBlockTrainerCpp\dlls\main.dll
-```
-
-## 10. 从旧版本更新到 V7.0.7
-
-更新前请先完全退出 **Grounded 2**。
-
-### 从 V7.0.6 更新
-
-V7.0.7 进一步扩展当前生物 / Boss 的 QTE 适配覆盖，完善动态攻击的二层预测，新增神秘人与 O.R.C. 育母蜘蛛相关适配，并加入 F8 QTE 显示模式切换。
-
-为了避免不同版本文件混用，建议直接使用 V7.0.7 Release 包中的文件完整替换 PerfectBlockTrainer。
-
-把旧的：
-
-```text
-Grounded2\Augusta\Binaries\Win64\ue4ss\Mods\PerfectBlockTrainerCpp
-```
-
-替换成 V7.0.7 的 `PerfectBlockTrainerCpp` 文件夹。
-
-然后把：
-
-```text
-Grounded2\Augusta\Content\Paks\LogicMods
-```
-
-中的三个 PerfectBlockTrainer LogicMods 文件全部替换为 V7.0.7 Release 包中的版本：
-
-```text
-PerfectBlockTrainer.pak
-PerfectBlockTrainer.ucas
-PerfectBlockTrainer.utoc
-```
-
-最后确认：
-
-```text
-BPML_GenericFunctions : 1
-BPModLoaderMod : 1
-PerfectBlockTrainerCpp : 1
-```
-
-### 从 V7.0.5 或更早公开版本更新
-
-建议完整替换 PerfectBlockTrainer 文件。
-
-将旧的 `PerfectBlockTrainerCpp` 文件夹替换为 V7.0.7 版本，并将三个 PerfectBlockTrainer LogicMods 文件一起替换。
-
-不要混用不同 Release 包中的 LogicMods 文件。
-
-然后确认：
-
-```text
-BPML_GenericFunctions : 1
-BPModLoaderMod : 1
-PerfectBlockTrainerCpp : 1
-```
-
-### 从更早的开发版 / 测试版更新
-
-如果当前使用的是开发版或测试版，建议执行一次 PerfectBlockTrainer 全新安装。
-
-先完全退出 **Grounded 2**，删除旧的：
-
-```text
-Grounded2\Augusta\Binaries\Win64\ue4ss\Mods\PerfectBlockTrainerCpp
-```
-
-并删除旧的 PerfectBlockTrainer LogicMods 文件：
-
-```text
-Grounded2\Augusta\Content\Paks\LogicMods\PerfectBlockTrainer.pak
-Grounded2\Augusta\Content\Paks\LogicMods\PerfectBlockTrainer.ucas
-Grounded2\Augusta\Content\Paks\LogicMods\PerfectBlockTrainer.utoc
-```
-
-然后按照上面的第 5–7 节重新安装 V7.0.7。
-
-## 11. 卸载
-
-先完全退出 **Grounded 2**。
-
-删除：
-
-```text
-Grounded2\Augusta\Binaries\Win64\ue4ss\Mods\PerfectBlockTrainerCpp
-```
-
-然后删除：
-
-```text
-Grounded2\Augusta\Content\Paks\LogicMods\PerfectBlockTrainer.pak
-Grounded2\Augusta\Content\Paks\LogicMods\PerfectBlockTrainer.ucas
-Grounded2\Augusta\Content\Paks\LogicMods\PerfectBlockTrainer.utoc
-```
-
-最后从 `mods.txt` 中删除或禁用 `PerfectBlockTrainerCpp`。
-
-不要删除其他 Mod 的文件。
-
-## 12. V7.0.7 官方发行身份
-
-Release 包：
-
-```text
-PerfectBlockTrainer_V7.0.7_RELEASE.zip
-```
-
-SHA256：
-
-```text
-1822BFF8A389EBD14BF11AAD287710FE96C68383AFC9FEA0291AA6A981E8A4E9
-```
-
-运行时 DLL：
-
-```text
-main.dll
-```
-
-SHA256：
-
-```text
-64236917A2B0805321EA50DCA6167177FB039ECBE57FC0764E15B08E58215D95
-```
-
-只有从 PerfectBlockTrainer 官方发布渠道获取的包应被视为官方版本。
-
-## 13. 最终检查表
-
-- [ ] 已安装 UE4SS_Grounded2 1.0.4
-- [ ] 安装 UE4SS 后可以正常进入主菜单
-- [ ] `PerfectBlockTrainerCpp\dlls\main.dll` 路径正确
-- [ ] 已安装 `PerfectBlockTrainer.pak`
-- [ ] 已安装 `PerfectBlockTrainer.ucas`
-- [ ] 已安装 `PerfectBlockTrainer.utoc`
-- [ ] `BPML_GenericFunctions : 1`
-- [ ] `BPModLoaderMod : 1`
-- [ ] `PerfectBlockTrainerCpp : 1`
-- [ ] 可以正常进入存档
-- [ ] 敌人攻击时出现 QTE
-- [ ] Ring 正常显示
-- [ ] Pointer 正常运动
-- [ ] 攻击结束后 UI 正常消失
+## 简体中文
+---
+### 1. 运行要求
+Grounded2 UE5.7.4，Windows x64，以及已测试的UE4SS_Grounded2 1.0.6：
+UE4SS_Grounded2 52 1.0.6 2026-10-24T21-32Z V7eYNegQ4.zip
+UE4SS请按其作者的说明安装。本包不含UE4SS.dll、dwmapi.dll或安装器。
+不需要单独安装.NET。新版使用Windows原生绘图和UE4SS环境所需的C++运行库。
+如果系统明确提示缺少VCRUNTIME140相关DLL，请安装微软官方Visual C++
+2015–2022 x64运行库，不要从不明网站下载单个DLL。
+
+### 2. 找到游戏根目录
+Steam > Grounded2 > 属性 > 已安装文件 > 浏览。
+根目录应包含Augusta、Engine及Grounded2.exe，下面路径均从这里开始。
+
+### 3. 准备UE4SS
+正确布局包括：
+- `Augusta\Binaries\Win64\dwmapi.dll`
+- `Augusta\Binaries\Win64\ue4ss\UE4SS.dll`
+已经使用上述版本正常运行的用户无需重装。保留其他模组及配置，不要盲目
+覆盖其他图形代理文件。UE4SS与PBT是分别安装的。
+
+### 4. 安装PBT
+保存并完全退出游戏，先完成本文开头的旧版文件清理。
+解压本包，打开PerfectBlockTrainer_V7.0.8_RELEASE\Mods，只复制其中的
+PerfectBlockTrainerCpp这一个文件夹到：
+- `Grounded2\Augusta\Binaries\Win64\ue4ss\Mods`
+升级时替换PBT自己的main.dll。不要放成Mods\Mods，也不要把DLL放在游戏EXE旁。
+
+### 5. 核对文件
+- `ue4ss\Mods\PerfectBlockTrainerCpp\enabled.txt`
+- `ue4ss\Mods\PerfectBlockTrainerCpp\config.default.json`
+- `ue4ss\Mods\PerfectBlockTrainerCpp\dlls\main.dll`
+空白enabled.txt用于启用模组，无需编辑mods.txt，也无需添加
+PerfectBlockTrainerCpp : 1。注意不要误存为enabled.txt.txt。
+不要用其他包的mods.txt覆盖自己现有的模组配置。
+
+### 6. 启动与使用
+通过Steam正常启动。启动演示显示白环、红色指针及同时出现的绿、红、金
+空心框；指针完整经过后框会逐个消失。支持的攻击自动显示战斗QTE，结束后
+自动清理。无需另外启动圆环程序，也没有F8全显／半透明／隐藏切换。
+
+### 7. 提示含义
+白环：时机参照；绿色空心框：推荐完美格挡窗口；红框：危险警告，请考虑
+闪避，不能当成普通完美格挡提示；金框：多个可格挡窗口的公共时间部分。
+模组提供提示，仍需要玩家自己执行格挡或闪避。
+
+### 8. 调整外观
+将PerfectBlockTrainerCpp中的config.default.json复制一份，改名为config.json，
+使用文本编辑器修改，重启游戏生效。可调整半径、线宽、框宽、指针大小、
+centerX／centerY和scale。默认以1080高度为基准，随游戏客户区高度缩放。
+数值保持合理正数，中心位置为0到1之间的比例。本包不提供个人config.json，
+更新时保留你的自定义配置即可。
+
+### 9. OBS录制
+绘图代码虽然在游戏进程内，但圆环仍是独立透明窗口。游戏采集或窗口采集
+可能只录到游戏。显示器采集可同时录入游戏和圆环，正式录制前请先预览。
+
+### 10. 圆环没有出现
+先观察启动演示，再让已支持的敌人攻击。检查目录层级、enabled.txt及
+UE4SS版本。修改文件前退出游戏。测试默认配置时，先备份再暂时改名个人
+config.json。UE4SS.log中的[PBTCPP][NativeQte]记录启动／状态，如有错误可
+提供日志协助排查。不需要PbtOverlay.exe；手动运行旧程序可能产生双重圆环。
+
+### 11. 卸载与回退
+退出游戏，备份个人配置，只移除ue4ss\Mods\PerfectBlockTrainerCpp。
+保留其他模组及UE4SS。回退时恢复完整匹配的旧版本，按旧说明安装；旧EXE
+版还需要恢复对应的PBTQteAutoStart文件夹。
+
+### 12. 包内文件
+INSTALL.txt是安装说明，RELEASE_NOTES.md是更新内容，VERSION.txt标识版本，
+第三方许可_THIRD_PARTY_NOTICES.txt保留原生组件的第三方许可文本。
