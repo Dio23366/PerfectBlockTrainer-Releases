@@ -48,7 +48,7 @@ PerfectBlockTrainer 从一个真实玩家问题出发：复杂战斗中的完美
 
 ### Public release & usage / 公开发布与使用情况
 
-- **Current Public Build:** V7.0.8 — native QTE architecture (available on [Nexus Mods](https://www.nexusmods.com/grounded2/mods/198))
+- **Current Public Build:** V7.0.8 — native QTE architecture ([GitHub Release](https://github.com/Dio23366/PerfectBlockTrainer-Releases/releases/tag/V7.0.8) · [Nexus Mods](https://www.nexusmods.com/grounded2/mods/198))
 - **Nexus distribution snapshot:** figures below are from the screenshot supplied on October 29, 2026; they are a dated snapshot, not live counters.
 - **574 Unique Downloads** on Nexus Mods
 - **863 Total Downloads** on Nexus Mods
@@ -595,7 +595,7 @@ The renderer uses Windows GDI+ and the native C++ runtime. No separate .NET inst
 
 ## Installation / 安装
 
-Get the current V7.0.8 native package from [Nexus Mods](https://www.nexusmods.com/grounded2/mods/198), then follow [INSTALL.md](INSTALL.md). The [GitHub Releases](https://github.com/Dio23366/PerfectBlockTrainer-Releases/releases) archive retains earlier versions; do not confuse the latest existing V7.0.7 GitHub asset with the V7.0.8 native build.
+Download the current V7.0.8 native package from [GitHub Release V7.0.8](https://github.com/Dio23366/PerfectBlockTrainer-Releases/releases/tag/V7.0.8) or [Nexus Mods](https://www.nexusmods.com/grounded2/mods/198), then follow [INSTALL.md](INSTALL.md). Both channels distribute the same native release ZIP. Earlier versions remain in the [release archive](https://github.com/Dio23366/PerfectBlockTrainer-Releases/releases).
 
 ```text
 PerfectBlockTrainer_V7.0.8_RELEASE/
@@ -683,7 +683,7 @@ Different attacks from the same creature are useful to report separately.
 
 ## Release Integrity / 发布校验
 
-Use the official [Nexus Mods page](https://www.nexusmods.com/grounded2/mods/198) for the current native build and [GitHub Releases](https://github.com/Dio23366/PerfectBlockTrainer-Releases/releases) for the release archive.
+The current native build is available from [GitHub Release V7.0.8](https://github.com/Dio23366/PerfectBlockTrainer-Releases/releases/tag/V7.0.8) and the official [Nexus Mods page](https://www.nexusmods.com/grounded2/mods/198). Historical builds remain in [GitHub Releases](https://github.com/Dio23366/PerfectBlockTrainer-Releases/releases).
 
 The V7.0.8 native ZIP contains one mod directory and no nested EXE/runtime payload. Version labels alone do not identify the intermediate C# package and the final native package; their contents differ substantially.
 
